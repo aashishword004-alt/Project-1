@@ -24,9 +24,11 @@ let security = {
 
         try {
             if (await argon2.verify(hashpaaword, password)) {
+                console.log("Password Match");
                 return true;
             }
             else {
+                console.log("Password Not Match");
                 return false;
             }
 
@@ -36,7 +38,7 @@ let security = {
         }
 
     }
-
+    
 
 }
 module.exports = security;
