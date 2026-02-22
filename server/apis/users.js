@@ -56,46 +56,6 @@ app.post(ROUTE + '/Ragister', (req, res) => {
 });
 
 // Login API
-app.post(ROUTE + '/Login', (req, res) => {
-    let { email, password } = req.body;
-    if (email === undefined || password === undefined) {
-
-        res.json([{ "Error": "Input is Missing" }]);
-    }
-    else{
-        let sql = "SELECT id, email, password FROM users WHERE email = ?";
-        connect.con.query(sql , [email] ,(error ,result) =>{
-            if(error) {
-                console.log("Error in fetching data ", error);
-                res.json([{ "Error": "Error in fetching data" }]);
-            }
-            else{
-                   if(result.length === 0)
-                {
-                    res.json([{ "Error": " Attempt Failed" }]);
-                }
-                else {
-                    let hashpassword = result[0]['password'];
-                    sequrity.conformpassword(password,hashpassword).then((macth) =>{
-                        if(!macth)
-                        {
-                            res.json([{ "Error": "Login Attempt Failed" }]);
-                        }
-                        else{
-                            res.json([{"Success:" : "Login Successfully"} ,{"id" : result[0].id}]);
-                        }
-                    });
-                }
-            }
-        });
-
-
-
-    }
-});
-
-
-
 
 
 
