@@ -1,7 +1,7 @@
 const argon2 = require("argon2");
-const { password } = require("../database/adpter");
 
-let security = {
+
+let sequrity = {
 
     // hashpassword
     gethashpassword: async (password) => {
@@ -42,6 +42,6 @@ let security = {
 
 }
 
-module.exports = security;
+module.exports = sequrity;
 
 
