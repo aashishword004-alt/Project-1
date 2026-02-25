@@ -55,64 +55,40 @@ app.post(ROUTE + '/Ragister', (req, res) => {
 });
 
 // Login API
-// app.post(ROUTE + '/Login', (req, res) => {
-//     let { email, password } = req.body;
-//     if (email === undefined || password === undefined) {
-//         res.json([{ 'Error': 'Input is Missing' }]);
-
-//     }
-//     else {
-//         let sql = "Select email,password from users where email = ?";
-//         connect.con.query(sql, [email], (error, result) => {
-//             if (error) {
-//                 res.json([{ 'Error': 'Error in fetching data' }]);
-//             }
-//             else {
-//                 if (result.length == 0) {
-//                     res.json([{ 'Error': 'Email Not Found' }]);
-//                 }
-//                 else {
-//                     let hashpassword = result[0]['password'];
-//                     sequrity.conformpassword(password, hashpassword).then((match) => {
-//                         if (match == false)
-//                         {
-//                             res.json([{'Error' : 'Login Attempt Failed'}]);
-//                         }
-//                         else{
-//                             res.json([{'Success' : 'Login Successfully'}]);
-//                         }
-//                     })
-//                 }
-//             }
-//         })
-//     }
-// })
-
-app.post(ROUTE + '/login', async (req, res) => {
-
+app.post(ROUTE + '/Login', (req, res) => {
     let { email, password } = req.body;
+    if (email === undefined || password === undefined) {
+        res.json([{ 'Error': 'Input is Missing' }]);
 
-    let sql = "SELECT * FROM users WHERE email = ?";
+    }
+    else {
+        let sql = "Select email,password from users where email = ?";
+        connect.con.query(sql, [email], (error, result) => {
+            if (error) {
+                res.json([{ 'Error': 'Error in fetching data' }]);
+            }
+            else {
+                if (result.length == 0) {
+                    res.json([{ 'Error': 'Email Not Found' }]);
+                }
+                else {
+                    let hashpassword = result[0]['password'];
+                    sequrity.conformpassword(password, hashpassword).then((match) => {
+                        if (match == false)
+                        {
+                            res.json([{'Error' : 'Login Attempt Failed'}]);
+                        }
+                        else{
+                            res.json([{'Success' : 'Login Successfully'}]);
+                        }
+                    })
+                }
+            }
+        })
+    }
+})
 
-    connect.con.query(sql, [email], async (error, result) => {
 
-        if (result.length === 0) {
-            return res.json("User Not Found");
-        }
-
-        let user = result[0];
-
-        let isMatch = await sequrity.conformpassword(password, user.password);
-
-        if (isMatch) {
-            res.json("Login Success");
-        } else {
-            res.json("Password Incorrect");
-        }
-
-    });
-
-});
 
 
 let port = 3000;
