@@ -18,16 +18,29 @@ const ROUTE = '/users'
 
 // GET request
 app.get(ROUTE, (req, res) => {
-    res.json('Users API');
+    let sql = "Select id,name,email,(Select count(*) from users) as total from users";
+    connect.con.query(sql, (error, result) => {
+        if (error) {
+            res.json([{ 'Error': 'Error in fetching data' }]);
+        }
+        else {
+            if (result.length === 0) {
+                res.json([{ 'Error': true }, { 'Message': 'No User Found' }]);
+            }
+            else {
+
+                res.json(result);
+            }
+        }
+    })
 });
 
 // Post request 
-
 // Ragister API
 app.post(ROUTE + '/Ragister', (req, res) => {
     let { name, email, password } = req.body;
     if (name === undefined || email === undefined || password === undefined) {
-        res.json('Input is Missing');
+        res.json([{'Error' : true},{'Message' : 'Input is Missing'}]);
     }
     else {
         let sql = "INSERT INTO users( name, email, password) VALUES (?,?,?)";
@@ -130,6 +143,11 @@ app.put(ROUTE + '/Change_password', (req, res) => {
             }
         });
     }
+});
+
+//Forgot Password API
+app.put(ROUTE + '/Forgot_password' ,(req,res) =>{
+  res.json([{'Message' : 'Forgot Password API'}]);
 });
 
 
