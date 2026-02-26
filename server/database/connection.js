@@ -6,9 +6,7 @@ let con = mysql.createConnection({
       user:adp.username,
       password: adp.password,
       database:adp.database,
-      port:adp.portno,
-
-       
+      port:adp.portno,  
 });
 
 con.connect((error) =>{

@@ -2,7 +2,6 @@ const argon2 = require("argon2");
 
 
 let sequrity = {
-
     // hashpassword
     gethashpassword: async (password) => {
 
@@ -24,11 +23,11 @@ let sequrity = {
 
         try {
             if (await argon2.verify(hashpaaword, password)) {
-                console.log("Password Match");
+                // console.log("Password Match");
                 return true;
             }
             else {
-                console.log("Password Not Match");
+                // console.log("Password Not Match");
                 return false;
             }
 
