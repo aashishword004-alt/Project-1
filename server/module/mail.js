@@ -30,4 +30,4 @@ const sendMail = (to,sub,text) => {
 // sendMail('aashishparmar0707@gmail.com',text);
 
 
-module.exports =  sendMail  
+module.exports =  {sendMail}  

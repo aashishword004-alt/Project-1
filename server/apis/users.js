@@ -89,7 +89,7 @@ app.post(ROUTE + '/Login', (req, res) => {
                 else {
                     let hashpassword = result[0]['password'];
                     sequrity.conformpassword(password, hashpassword).then((match) => {
-                        if (match == false) {
+                        if (match === false) {
                             res.json([{ 'Error': true }, { 'Message': 'Login Attempt Failed' }]);
                         }
                         else {
@@ -165,6 +165,7 @@ app.put(ROUTE + '/Forgot_password', (req, res) => {
                 }
                 else {
                     let random = sequrity.GenOtp(6);
+                    console.log(random);
                     sequrity.gethashpassword(random).then((hash) =>{
                         let sql = 'update users set password = ? where email = ?';
                         let Value = [hash,email];
@@ -176,8 +177,7 @@ app.put(ROUTE + '/Forgot_password', (req, res) => {
                             else{
                                 let sub = 'Password Reset OTP';
                                 let text = `Your password  is ${random}`;
-                                let mail = new Mail.sendMail;
-                                mail.send(email,sub,text);
+                                Mail.sendMail(email,sub,text)
                                 res.json([{'Error' : false} ,{'Success' : true} , {'Message' : 'Password are sent in your ' + email}]);
 
 
