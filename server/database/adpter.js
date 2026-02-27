@@ -3,3 +3,5 @@ module.exports.username='root',
 module.exports.database='job';
 module.exports.portno = 3308;
 module.exports.password=''
+
+'imat knrx khmy eftw'

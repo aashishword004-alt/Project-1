@@ -1,4 +1,5 @@
 const argon2 = require("argon2");
+let crypto = require('crypto');
 
 
 let sequrity = {
@@ -36,8 +37,17 @@ let sequrity = {
             console.error("Hashing Faild", err);
         }
 
-    }
-    
+    },
+
+    GenOtp : (length = 6) =>{
+        let otp = "";
+        for(let i = 0; i < length; i++)
+        {
+            otp += crypto.randomInt(0,10);
+        }
+        return otp;
+
+    }    
 
 }
 

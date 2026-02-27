@@ -3,6 +3,8 @@ let app = exprss();
 
 // Modules
 let sequrity = require('../module/password');
+let Mail = require('../module/mail')
+
 
 // database connection
 let connect = require('../database/connection');
@@ -21,7 +23,7 @@ app.get(ROUTE, (req, res) => {
     let sql = "Select id,name,email,(Select count(*) from users) as total from users";
     connect.con.query(sql, (error, result) => {
         if (error) {
-            res.json([{ 'Error': 'Error in fetching data' }]);
+            res.json([{ 'Error': true }, { 'Message': 'Error in Code' }]);
         }
         else {
             if (result.length === 0) {
@@ -40,7 +42,7 @@ app.get(ROUTE, (req, res) => {
 app.post(ROUTE + '/Ragister', (req, res) => {
     let { name, email, password } = req.body;
     if (name === undefined || email === undefined || password === undefined) {
-        res.json([{'Error' : true},{'Message' : 'Input is Missing'}]);
+        res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
     }
     else {
         let sql = "INSERT INTO users( name, email, password) VALUES (?,?,?)";
@@ -49,15 +51,15 @@ app.post(ROUTE + '/Ragister', (req, res) => {
             connect.con.query(sql, Value, (error, result) => {
                 if (error) {
                     if (error.errno === 1062) {
-                        res.json([{ 'Error': 'Email Already Exists' }]);
+                        res.json([{ 'Error': true }, { 'Message': 'Email Already Exists' }]);
                     }
                     else {
                         console.log("Error in inserting data ", error);
-                        res.json([{ 'Error': 'Error in inserting data' }]);
+                        res.json([{ 'Error': true }, { 'Message': 'Error in inserting data' }]);
                     }
                 }
                 else {
-                    res.json([{ 'Success': 'User Registered Successfully' }, { "id": result.insertId }]);
+                    res.json([{ 'Error': false }, { 'Success': true }, { 'Message': 'User Registered Successfully' }, { "id": result.insertId }]);
                 }
 
             });
@@ -71,27 +73,27 @@ app.post(ROUTE + '/Ragister', (req, res) => {
 app.post(ROUTE + '/Login', (req, res) => {
     let { email, password } = req.body;
     if (email === undefined || password === undefined) {
-        res.json([{ 'Error': 'Input is Missing' }]);
+        res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
 
     }
     else {
         let sql = "Select email,password from users where email = ?";
         connect.con.query(sql, [email], (error, result) => {
             if (error) {
-                res.json([{ 'Error': 'Error in fetching data' }]);
+                res.json([{ 'Error': true }, { 'Message': 'Error in Code' }]);
             }
             else {
                 if (result.length == 0) {
-                    res.json([{ 'Error': 'Email Not Found' }]);
+                    res.json([{ 'Error': true }, { 'Message': 'Email Not Found' }]);
                 }
                 else {
                     let hashpassword = result[0]['password'];
                     sequrity.conformpassword(password, hashpassword).then((match) => {
                         if (match == false) {
-                            res.json([{ 'Error': 'Login Attempt Failed' }]);
+                            res.json([{ 'Error': true }, { 'Message': 'Login Attempt Failed' }]);
                         }
                         else {
-                            res.json([{ 'Success': true }, { 'Message': 'Login Successfully' }]);
+                            res.json([{ 'Error': false }, { 'Success': true }, { 'Message': 'Login Successfully' }]);
                         }
                     })
                 }
@@ -104,7 +106,7 @@ app.post(ROUTE + '/Login', (req, res) => {
 app.put(ROUTE + '/Change_password', (req, res) => {
     let { id, password, newpassword } = req.body;
     if (id === undefined || password === undefined || newpassword === undefined) {
-        res.json([{ 'Error': 'Input is Missing' }]);
+        res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
     }
     else {
         let sql = 'select password from users where id = ?';
@@ -131,7 +133,7 @@ app.put(ROUTE + '/Change_password', (req, res) => {
                                         res.json([{ 'Error': true }, { 'Message': 'Error in Code' }]);
                                     }
                                     else {
-                                        res.json([{ 'Success': true }, { 'Message': 'Password Changed Successfully' }, { 'id': output.affectedRows }]);
+                                        res.json([{ 'Error': false }, { 'Success': true }, { 'Message': 'Password Changed Successfully' }, { 'id': output.affectedRows }]);
                                         // console.log(output);
                                     }
                                 });
@@ -146,9 +148,49 @@ app.put(ROUTE + '/Change_password', (req, res) => {
 });
 
 //Forgot Password API
-app.put(ROUTE + '/Forgot_password' ,(req,res) =>{
-  res.json([{'Message' : 'Forgot Password API'}]);
+app.put(ROUTE + '/Forgot_password', (req, res) => {
+    let { email } = req.body;
+    if (email === undefined) {
+        res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
+    }
+    else {
+        let sql = 'select  id from users where email = ?';
+        connect.con.query(sql, [email], (error, result) => {
+            if (error) {
+                res.json([{ 'Error': true }, { 'Message': 'Error in Code' }]);
+            }
+            else {
+                if (result.length === 0) {
+                    res.json([{ 'Error': true }, { 'Message': 'User Not Found' }]);
+                }
+                else {
+                    let random = sequrity.GenOtp(6);
+                    sequrity.gethashpassword(random).then((hash) =>{
+                        let sql = 'update users set password = ? where email = ?';
+                        let Value = [hash,email];
+                        connect.con.query(sql,Value,(err,output) =>{
+                            if(err)
+                            {
+                                res.json([{'Error' : true} ,{'Message' : 'Error in Code'}]);
+                            }
+                            else{
+                                let sub = 'Password Reset OTP';
+                                let text = `Your password  is ${random}`;
+                                let mail = new Mail.sendMail;
+                                mail.send(email,sub,text);
+                                res.json([{'Error' : false} ,{'Success' : true} , {'Message' : 'Password are sent in your ' + email}]);
+
+
+                            }
+                        })
+                    })
+                }
+            }
+        })
+
+    }
 });
+
 
 
 
