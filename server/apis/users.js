@@ -41,7 +41,7 @@ app.get(ROUTE, (req, res) => {
 // Ragister API
 app.post(ROUTE + '/Ragister', (req, res) => {
     let { name, email, password } = req.body;
-    if (name === undefined || email === undefined || password === undefined) {
+    if (name === undefined || email === undefined || password === undefined ) {
         res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
     }
     else {
@@ -72,7 +72,7 @@ app.post(ROUTE + '/Ragister', (req, res) => {
 // Login API
 app.post(ROUTE + '/Login', (req, res) => {
     let { email, password } = req.body;
-    if (email === undefined || password === undefined) {
+    if (email === undefined || password === undefined || role === undefined) {
         res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
 
     }
