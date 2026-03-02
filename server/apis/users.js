@@ -39,7 +39,7 @@ app.get(ROUTE, (req, res) => {
 
 // Post request 
 // Ragister API
-app.post(ROUTE + '/Ragister', (req, res) => {
+app.post(ROUTE + '/Register', (req, res) => {
     let { name, email, password } = req.body;
     if (name === undefined || email === undefined || password === undefined ) {
         res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
