@@ -45,7 +45,7 @@ app.post(ADMIN + '/Register', (req, res) => {
                             res.json([{ 'Error': true }, { 'Message': 'Error in inserting data' }]);
                         }
                     }
-                    
+
                     else {
                         res.json([{ 'Error': false }, { 'Success': true }, { 'Message': 'User Registered Successfully' }, { "id": result.insertId }]);
                     }
@@ -63,7 +63,34 @@ app.post(ADMIN + '/Register', (req, res) => {
 // recuiter Login
 app.post(ADMIN + '/Login', (req, res) => {
 
-    res.json("This is a Login api recruiter");
+    let { email, password } = req.body;
+    if (!email || !password) {
+        req.json([{ 'Error': true }, { 'MEssage': 'Input is Missing' }]);
+    }
+    else {
+        let sql = 'select email , password from users where email = ?';
+        let Value = [email, password]
+        connect.con.query(sql, Value, (Error, result) => {
+            if (Error) {
+                res.json([{ 'Error': true }, { 'Message': 'Somthing Wromg in Code' }]);
+            }
+            else {
+                if (result.length === 0) {
+                    res.json([{ 'Error': true }, { 'Message': 'Invalid Recuiter' }]);
+                }
+                let hashpasswor = result[0].password;
+                sequrity.conformpassword (password,hashpasswor).then((macth) => {
+                    if (!macth) {
+                        res.json([{ 'Error': true }, { 'Message': 'Login Attempt Faild' }]);
+                    }
+                    else {
+                        res.json([{ 'Error': false }, { 'Message': 'Login Successfully' }]);
+
+                    }
+                });
+            }
+        });
+    }
 
 });
 
