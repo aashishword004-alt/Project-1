@@ -14,10 +14,10 @@ let sequrity = require('../module/password')
 let connect = require('../database/connection');
 
 // Routes 
-const ADMIN = '/Company';
+const COMPANY = '/Company';
 // recruiter register
 
-app.post(ADMIN + '/Register', (req, res) => {
+app.post(COMPANY + '/Register', (req, res) => {
     let { name, email, password, role } = req.body;
     if (name === undefined || email === undefined || password === undefined || role === undefined) {
 
@@ -61,7 +61,7 @@ app.post(ADMIN + '/Register', (req, res) => {
 });
 
 // recuiter Login
-app.post(ADMIN + '/Login', (req, res) => {
+app.post(COMPANY + '/Login', (req, res) => {
 
     let { email, password } = req.body;
     if (!email || !password) {
@@ -76,12 +76,12 @@ app.post(ADMIN + '/Login', (req, res) => {
             }
             else {
                 if (result.length === 0) {
-                    res.json([{ 'Error': true }, { 'Message': 'Invalid Recuiter' }]);
+                    res.json([{ 'Error': true }, { 'Message': 'Login Attempt Faild' }]);
                 }
                 let hashpasswor = result[0].password;
-                sequrity.conformpassword (password,hashpasswor).then((macth) => {
+                sequrity.conformpassword(password, hashpasswor).then((macth) => {
                     if (!macth) {
-                        res.json([{ 'Error': true }, { 'Message': 'Login Attempt Faild' }]);
+                        res.json([{ 'Error': true }, { 'Message': 'Login  Faild' }]);
                     }
                     else {
                         res.json([{ 'Error': false }, { 'Message': 'Login Successfully' }]);
@@ -94,6 +94,38 @@ app.post(ADMIN + '/Login', (req, res) => {
 
 });
 
+const ADMIN = '/Admin';
+app.post(ADMIN, (req, res) => {
+    let { email, password } = req.body;
+    if (!email || !password) {
+        res.json([{ 'Error': true }, { 'Message': 'INput is Missing' }]);
+    }
+    else {
+        let sql = 'Select email , password from users where email =  ?';
+        let Value = [email, password]
+        connect.con.query(sql, Value, (Error, result) => {
+            if (Error) {
+                res.json([{ 'Eroor': true }, { 'Message': 'Somting Wrong in Code' }]);
+            }
+            else {
+                if (result.length === 0) {
+                    res.json([{ 'Error': true }, { 'Message': 'Login Attempt Faild' }]);
+                }
+                else {
+                    let Hashpassword = result[0].password;
+                    sequrity.conformpassword(password, Hashpassword).then((macth) => {
+                        if (!macth) {
+                            res.json([{ 'Error': true }, { 'Message': 'Login  Faild' }]);
+                        }
+                        else {
+                            res.json([{ 'Error': false }, { 'Message': 'Login Successfully' }]);
+                        }
+                    });
+                }
+            }
+        });
+    }
+});
 
 
 
