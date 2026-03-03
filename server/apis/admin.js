@@ -101,7 +101,7 @@ app.post(ADMIN, (req, res) => {
         res.json([{ 'Error': true }, { 'Message': 'INput is Missing' }]);
     }
     else {
-        let sql = 'Select email , password from users where email =  ?';
+        let sql = 'Select * from users where email =  ?';
         let Value = [email, password]
         connect.con.query(sql, Value, (Error, result) => {
             if (Error) {
@@ -112,13 +112,16 @@ app.post(ADMIN, (req, res) => {
                     res.json([{ 'Error': true }, { 'Message': 'Login Attempt Faild' }]);
                 }
                 else {
-                    let Hashpassword = result[0].password;
-                    sequrity.conformpassword(password, Hashpassword).then((macth) => {
+                    let user = result[0];
+                    sequrity.conformpassword(password,user.password ).then((macth) => {
                         if (!macth) {
                             res.json([{ 'Error': true }, { 'Message': 'Login  Faild' }]);
                         }
                         else {
-                            res.json([{ 'Error': false }, { 'Message': 'Login Successfully' }]);
+                              if(user.role !== 'Admin')
+                              {
+                                res.json([{'Error' : true},{'Message' : 'Login den'}])
+                              }
                         }
                     });
                 }

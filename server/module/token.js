@@ -1,15 +1,26 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
-require('dotenv').config();
+function verifyToken(req, res, next) {
 
-const SECRET_KEY = process.env.SECRET_KEY;
+    const authHeader = req.headers["authorization"];
 
-const user = {
-    id: 1,
-    email: "ashish@gmail.com",
-    role: "admin"
-};
+    if (!authHeader) {
+        return res.json({ error: true, message: "Token required" });
+    }
 
-const token = jwt.sign(user, SECRET_KEY, { expiresIn: "1h" });
+    const token = authHeader.split(" ")[1];  // Bearer TOKEN
 
-console.log(token);
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+
+        if (err) {
+            return res.json({ error: true, message: "Invalid or Expired Token" });
+        }
+
+        // token is valid
+        req.user = decoded;
+        next();
+    });
+}
+
+module.exports = verifyToken;
