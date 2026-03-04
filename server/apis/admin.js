@@ -1,11 +1,13 @@
 let express = require('express');
 let app = express();
+require("dotenv").config();
 
 
 //middleware;
 let bodyparser = require('body-parser');
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extends: true }));
+let jwt = require('jsonwebtoken');
 
 // modules 
 let sequrity = require('../module/password')
@@ -113,15 +115,27 @@ app.post(ADMIN, (req, res) => {
                 }
                 else {
                     let user = result[0];
-                    sequrity.conformpassword(password,user.password ).then((macth) => {
+                    sequrity.conformpassword(password, user.password).then((macth) => {
                         if (!macth) {
                             res.json([{ 'Error': true }, { 'Message': 'Login  Faild' }]);
                         }
                         else {
-                              if(user.role !== 'Admin')
-                              {
-                                res.json([{'Error' : true},{'Message' : 'Login den'}])
-                              }
+                            if (user.role !== 'admin') {
+                                res.json([{ 'Error': true }, { 'Message': 'Access Denied' }]);
+                            }
+                            else {
+                                const token = jwt.sign(
+                                    { id: user.id, email: user.email, role: user.role },
+                                    process.env.SECRET_KEY,
+                                    {expiresIn:'10min'}
+                                );
+                                return res.json([
+                                    { 'Error': false },
+                                    { 'MEssage': 'Login Successfully' },
+                                    { token: token }
+                                ]);
+
+                            }
                         }
                     });
                 }
