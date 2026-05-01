@@ -17,7 +17,6 @@ const USER_ROUTE = '/users';
 // Ragister API
 app.post(USER_ROUTE + '/Ragister' , (req,res) =>{user.Ragistretion(req,res)});
 
-
 // Login API
 app.post(USER_ROUTE + '/Login' ,(req,res) =>{user.Login(req,res)});
 
@@ -26,6 +25,12 @@ app.put(USER_ROUTE + '/Changepassword' ,(req,res) =>{user.changepassword(req,res
 
 // Forgot Password 
 app.put(USER_ROUTE + '/Forgotpassword' , (req,res) =>{user.Forgotpassword(req,res)});
+
+
+// Admin Apis 
+
+const ADMIN = '/admin'
+app.post(ADMIN + '/Login' ,(req,res) =>{})
 
 
 const Port = 5000;

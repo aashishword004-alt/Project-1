@@ -6,7 +6,9 @@ function verifyToken(req, res, next) {
     const authHeader = req.headers["authorization"];
 
     if (!authHeader) {
-        return res.json({ error: true, message: "Token required" });
+        return res.json([
+            { 'error': true, },
+            { 'message': "Token required" }]);
     }
 
     const token = authHeader.split(" ")[1];  // Bearer TOKEN

@@ -19,48 +19,48 @@ let connect = require('../database/connection');
 const COMPANY = '/Company';
 // recruiter register
 
-app.post(COMPANY + '/Register', (req, res) => {
-    let { name, email, password, role } = req.body;
-    if (name === undefined || email === undefined || password === undefined || role === undefined) {
+// app.post(COMPANY + '/Register', (req, res) => {
+//     let { name, email, password, role } = req.body;
+//     if (name === undefined || email === undefined || password === undefined || role === undefined) {
 
-        res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
-    }
-    else {
+//         res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
+//     }
+//     else {
 
-        if (role === 'admin') {
-            res.json([{ 'Error': true }, { 'Message': 'Cannot register as admin' }])
-        }
-        else {
-            let status = 'approved'
-            if (role === 'recruiter')
-                status = 'panding'
-            let sql = "INSERT INTO users( name, email, password,role) VALUES (?,?,?,?)";
-            sequrity.gethashpassword(password).then((hash) => {
-                let Value = [name, email, hash, role];
-                connect.con.query(sql, Value, (error, result) => {
-                    if (error) {
-                        if (error.errno === 1062) {
-                            res.json([{ 'Error': true }, { 'Message': 'Invalid Email Address' }]);
-                        }
-                        else {
-                            console.log("Error in inserting data ", error);
-                            res.json([{ 'Error': true }, { 'Message': 'Error in inserting data' }]);
-                        }
-                    }
+//         if (role === 'admin') {
+//             res.json([{ 'Error': true }, { 'Message': 'Cannot register as admin' }])
+//         }
+//         else {
+//             let status = 'approved'
+//             if (role === 'recruiter')
+//                 status = 'panding'
+//             let sql = "INSERT INTO users( name, email, password,role) VALUES (?,?,?,?)";
+//             sequrity.gethashpassword(password).then((hash) => {
+//                 let Value = [name, email, hash, role];
+//                 connect.con.query(sql, Value, (error, result) => {
+//                     if (error) {
+//                         if (error.errno === 1062) {
+//                             res.json([{ 'Error': true }, { 'Message': 'Invalid Email Address' }]);
+//                         }
+//                         else {
+//                             console.log("Error in inserting data ", error);
+//                             res.json([{ 'Error': true }, { 'Message': 'Error in inserting data' }]);
+//                         }
+//                     }
 
-                    else {
-                        res.json([{ 'Error': false }, { 'Success': true }, { 'Message': 'User Registered Successfully' }, { "id": result.insertId }]);
-                    }
+//                     else {
+//                         res.json([{ 'Error': false }, { 'Success': true }, { 'Message': 'User Registered Successfully' }, { "id": result.insertId }]);
+//                     }
 
-                });
-            });
+//                 });
+//             });
 
-        }
+//         }
 
 
-    }
+//     }
 
-});
+// });
 
 // recuiter Login
 app.post(COMPANY + '/Login', (req, res) => {
@@ -96,52 +96,37 @@ app.post(COMPANY + '/Login', (req, res) => {
 
 });
 
-const ADMIN = '/Admin';
-app.post(ADMIN, (req, res) => {
-    let { email, password } = req.body;
-    if (!email || !password) {
-        res.json([{ 'Error': true }, { 'Message': 'INput is Missing' }]);
+// Admin ChangePassword 
+app.put(COMPANY + '/Change_Password', (req, res) => {
+    let { id, email, password } = req.body;
+
+    if (!id && !email && !password) {
+        res.json([{ 'Error': true }, { 'Message': 'Input is  Missing' }]);
     }
     else {
-        let sql = 'Select * from users where email =  ?';
-        let Value = [email, password]
-        connect.con.query(sql, Value, (Error, result) => {
-            if (Error) {
-                res.json([{ 'Eroor': true }, { 'Message': 'Somting Wrong in Code' }]);
+        let sql = "Select email , password from Admin where email = ?";
+        let values = [email];
+
+        connect.con.query(sql, values, (result, error) => {
+            if (error) {
+                res.json([{ 'Error ': true },
+                { 'Message ': error }
+                ])
             }
             else {
-                if (result.length === 0) {
-                    res.json([{ 'Error': true }, { 'Message': 'Login Attempt Faild' }]);
-                }
-                else {
-                    let user = result[0];
-                    sequrity.conformpassword(password, user.password).then((macth) => {
-                        if (!macth) {
-                            res.json([{ 'Error': true }, { 'Message': 'Login  Faild' }]);
-                        }
-                        else {
-                            if (user.role !== 'admin') {
-                                res.json([{ 'Error': true }, { 'Message': 'Access Denied' }]);
-                            }
-                            else {
-                                const token = jwt.sign(
-                                    { id: user.id, email: user.email, role: user.role },
-                                    process.env.SECRET_KEY,
-                                    {expiresIn:'10min'}
-                                );
-                                return res.json([
-                                    { 'Error': false },
-                                    { 'MEssage': 'Login Successfully' },
-                                    { token: token }
-                                ]);
-
-                            }
-                        }
-                    });
+                if (result.length == 0) {
+                    res.json([{ 'Error': true },
+                    { 'Message': 'No Admin Found' }]);
                 }
             }
-        });
+        })
+
     }
+});
+
+// Admin Forgoot Password 
+app.put(COMPANY + '/Forgot_Password', (req, res) => {
+    let { email } = req.body;
 });
 
 
