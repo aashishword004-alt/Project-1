@@ -175,12 +175,10 @@ app.put(ROUTE + '/Forgot_password', (req, res) => {
                                 res.json([{'Error' : true} ,{'Message' : 'Error in Code'}]);
                             }
                             else{
-                                let sub = 'Password Reset OTP';
+                                let sub = 'New  Password';
                                 let text = `Your password  is ${random}`;
                                 Mail.sendMail(email,sub,text)
                                 res.json([{'Error' : false} ,{'Success' : true} , {'Message' : 'Password are sent in your ' + email}]);
-
-
                             }
                         })
                     })

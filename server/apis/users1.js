@@ -10,7 +10,7 @@ let connect = require('../database/connection');
 
 // Routes
 // GET request
-    function Users   (req, res) {
+function Users(req, res) {
     let sql = "Select id,name,email,(Select count(*) from users) as total from users";
     connect.con.query(sql, (error, result) => {
         if (error) {
@@ -30,38 +30,45 @@ let connect = require('../database/connection');
 
 // Post request 
 // Ragister API 
-    function Ragistretion  (req, res)  {
-    let { name, email, password } = req.body;
-    if (name === undefined || email === undefined || password === undefined) {
+function Ragistretion(req, res) {
+    let { name, email, number , password, confirmPassword } = req.body;
+    if (name === undefined || email === undefined || number === undefined || password === undefined || confirmPassword === undefined) {
         res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
     }
     else {
-        let sql = "INSERT INTO users( name, email, password) VALUES (?,?,?)";
-        sequrity.gethashpassword(password).then((hash) => {
-            let Value = [name, email, hash];
-            connect.con.query(sql, Value, (error, result) => {
-                if (error) {
-                    if (error.errno === 1062) {
-                        res.json([{ 'Error': true }, { 'Message': 'Email Already Exists' }]);
+        if (password !== confirmPassword) {
+            res.json([{ 'Error': true }, { 'Message': 'Password  does not match' }]);
+            return;
+        }
+        else {
+            let sql = "INSERT INTO users( name, email, number, password) VALUES (?,?,?,?)";
+            sequrity.gethashpassword(password).then((hash) => {
+                let Value = [name, email, number, hash];
+                connect.con.query(sql, Value, (error, result) => {
+                    if (error) {
+                        if (error.errno === 1062) {
+                            res.json([{ 'Error': true }, { 'Message': 'Email Already Exists' }]);
+                        }
+                        else {
+                            console.log("Error in inserting data ", error);
+                            res.json([{ 'Error': true }, { 'Message': 'Error in inserting data' }]);
+                        }
                     }
                     else {
-                        console.log("Error in inserting data ", error);
-                        res.json([{ 'Error': true }, { 'Message': 'Error in inserting data' }]);
+                        res.json([{ 'Error': false }, { 'Success': true }, { 'Message': 'User Registered Successfully' }, { "id": result.insertId }]);
                     }
-                }
-                else {
-                    res.json([{ 'Error': false }, { 'Success': true }, { 'Message': 'User Registered Successfully' }, { "id": result.insertId }]);
-                }
 
+                });
             });
-        });
+
+        }
 
     }
 
 };
 
 // Login API
-function Login (req, res)  {
+function Login(req, res) {
     let { email, password } = req.body;
     if (email === undefined || password === undefined) {
         res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
@@ -94,7 +101,7 @@ function Login (req, res)  {
 }
 
 // Change password 
-function changepassword (req, res)  {
+function changepassword(req, res) {
     let { id, password, newpassword } = req.body;
     if (id === undefined || password === undefined || newpassword === undefined) {
         res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
@@ -139,7 +146,7 @@ function changepassword (req, res)  {
 }
 
 //Forgot Password API
-  function Forgotpassword (req, res) {
+function Forgotpassword(req, res) {
     let { email } = req.body;
     if (email === undefined) {
         res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
@@ -157,19 +164,18 @@ function changepassword (req, res)  {
                 else {
                     let random = sequrity.GenOtp(6);
                     console.log(random);
-                    sequrity.gethashpassword(random).then((hash) =>{
+                    sequrity.gethashpassword(random).then((hash) => {
                         let sql = 'update users set password = ? where email = ?';
-                        let Value = [hash,email];
-                        connect.con.query(sql,Value,(err,output) =>{
-                            if(err)
-                            {
-                                res.json([{'Error' : true} ,{'Message' : 'Error in Code'}]);
+                        let Value = [hash, email];
+                        connect.con.query(sql, Value, (err, output) => {
+                            if (err) {
+                                res.json([{ 'Error': true }, { 'Message': 'Error in Code' }]);
                             }
-                            else{
+                            else {
                                 let sub = 'Password Reset OTP';
                                 let text = `Your password  is ${random}`;
-                                Mail.sendMail(email,sub,text)
-                                res.json([{'Error' : false} ,{'Success' : true} , {'Message' : 'Password are sent in your ' + email}]);
+                                Mail.sendMail(email, sub, text)
+                                res.json([{ 'Error': false }, { 'Success': true }, { 'Message': 'Password are sent in your ' + email }]);
 
 
                             }

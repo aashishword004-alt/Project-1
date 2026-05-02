@@ -11,6 +11,7 @@ let jwt = require('jsonwebtoken');
 
 // modules 
 let sequrity = require('../module/password')
+let Mail = require('../module/mail')
 
 // databse 
 let connect = require('../database/connection');
@@ -113,7 +114,7 @@ app.put(COMPANY + '/Change_Password', (req, res) => {
                     res.json([{ 'Error': true }, { 'Message': 'User Not Found' }]);
                 }
                 else {
-                    hashpassword = result[0].password;
+                    let hashpassword = result[0].password;
                     sequrity.conformpassword(password, hashpassword).then((match) => {
                         if (!match) {
                             res.json([{ 'Error': true }, { 'Message': 'Change Password Attempt Faild' }]);
@@ -142,6 +143,48 @@ app.put(COMPANY + '/Change_Password', (req, res) => {
 // Admin Forgoot Password 
 app.put(COMPANY + '/Forgot_Password', (req, res) => {
     let { email } = req.body;
+    if(!email)
+    {
+        res.json([{'Error' : true},{'Message' : 'Input is Missing'}])
+    }
+    else {
+        let sql = 'select id from users where email = ?'
+        connect.con.query(sql , [email] , (error,result) =>{
+            if(error)
+            {
+                res.json([{'Error' : true} ,{'Message' : 'Somthing Wrong in code'}]);
+            }
+            else{
+                if(result.length === 0)
+                {
+                    res.json([{'Error' : true} ,{'Message' : 'Forgot Password Attempy faild'}])
+                }
+                 else {
+                    let random = seqirity.GenOtp(6)
+                    sequrity.gethashpassword(random).then((hash) =>{
+                        let sql = 'update users set password = ? where email = ?';
+                        let value  = [hash,email];
+                        connect.con.query(sql,value,(error,result ) =>{
+                            if(error)
+                            {
+                                res.json([{'Error' : true} ,{'Message' : 'Somthing Wrong in Code'}])
+                            }
+                            else
+                            { 
+                                let sub = 'New  Password';
+                                let text = `Your password  is ${random}`;
+                                Mail.sendMail(email,sub,text)
+                                res.json([{'Error' : false},{'Message' : 'Password are sent in your ' + email}]);
+                            }
+                        })
+                    })
+                 }
+
+            }
+        })
+
+    }
+
 });
 
 
