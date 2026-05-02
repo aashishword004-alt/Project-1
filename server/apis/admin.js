@@ -98,31 +98,46 @@ app.post(COMPANY + '/Login', (req, res) => {
 
 // Admin ChangePassword 
 app.put(COMPANY + '/Change_Password', (req, res) => {
-    let { id, email, password } = req.body;
-
-    if (!id && !email && !password) {
-        res.json([{ 'Error': true }, { 'Message': 'Input is  Missing' }]);
+    let { id, password, newpassword } = req.body;
+    if (!id || !password || !newpassword) {
+        res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
     }
     else {
-        let sql = "Select email , password from Admin where email = ?";
-        let values = [email];
-
-        connect.con.query(sql, values, (result, error) => {
-            if (error) {
-                res.json([{ 'Error ': true },
-                { 'Message ': error }
-                ])
+        let sql = 'select password from users where id = ?';
+        connect.con.query(sql, [id], (Error, result) => {
+            if (Error) {
+                res.json([{ 'Error': true }, { 'Message': 'Somthing Wromg in Code' }]);
             }
             else {
-                if (result.length == 0) {
-                    res.json([{ 'Error': true },
-                    { 'Message': 'No Admin Found' }]);
+                if (result.length === 0) {
+                    res.json([{ 'Error': true }, { 'Message': 'User Not Found' }]);
+                }
+                else {
+                    hashpassword = result[0].password;
+                    sequrity.conformpassword(password, hashpassword).then((match) => {
+                        if (!match) {
+                            res.json([{ 'Error': true }, { 'Message': 'Change Password Attempt Faild' }]);
+                        }
+                        else {
+                            sequrity.gethashpassword(newpassword).then((hash) => {
+                                let sql = 'update users set password = ? where id = ?';
+                                let value = [hash, id];
+                                connect.con.query(sql, value, (Error, result) => {
+                                    if (Error) {
+                                        res.json([{ 'Error': true }, { 'Message': 'Somthing Wromg in Code' }]);
+                                    }
+                                    else {
+                                        res.json([{ 'Error': false }, { 'Success': true }, { 'Message': 'Password Change Successfully' }, { 'AffectedRows': result.affectedRows }]);
+                                    }
+                                });
+                            })
+                        }
+                    })
                 }
             }
         })
-
     }
-});
+})
 
 // Admin Forgoot Password 
 app.put(COMPANY + '/Forgot_Password', (req, res) => {
