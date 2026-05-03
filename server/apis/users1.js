@@ -33,11 +33,11 @@ function Users(req, res) {
 function Ragistretion(req, res) {
     let { name, email, number , password, confirmPassword } = req.body;
     if (name === undefined || email === undefined || number === undefined || password === undefined || confirmPassword === undefined) {
-        res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
+        res.json([{ 'Error': true }, {'Success': false}, { 'Message': 'Input is Missing' }]);
     }
     else {
         if (password !== confirmPassword) {
-            res.json([{ 'Error': true }, { 'Message': 'Password  does not match' }]);
+            res.json([{ 'Error': true }, {'Success': false}, { 'Message': 'Password  does not match' }]);
             return;
         }
         else {
@@ -47,15 +47,15 @@ function Ragistretion(req, res) {
                 connect.con.query(sql, Value, (error, result) => {
                     if (error) {
                         if (error.errno === 1062) {
-                            res.json([{ 'Error': true }, { 'Message': 'Email Already Exists' }]);
+                            res.json([{ 'Error': true }, {'Success': false}, { 'Message': 'Email Already Exists' }]);
                         }
                         else {
                             console.log("Error in inserting data ", error);
-                            res.json([{ 'Error': true }, { 'Message': 'Error in inserting data' }]);
+                            res.json([{ 'Error': true }, {'Success': false}, { 'Message': 'Error in inserting data' }]);
                         }
                     }
                     else {
-                        res.json([{ 'Error': false }, { 'Success': true }, { 'Message': 'User Registered Successfully' }, { "id": result.insertId }]);
+                        res.json([{ 'Error': false }, {'Success': true}, { 'Message': 'User Registered Successfully' }, { "id": result.insertId }]);
                     }
 
                 });
@@ -71,27 +71,27 @@ function Ragistretion(req, res) {
 function Login(req, res) {
     let { email, password } = req.body;
     if (email === undefined || password === undefined) {
-        res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
+        res.json([{ 'Error': true }, {'Success': false}, { 'Message': 'Input is Missing' }]);
 
     }
     else {
         let sql = "Select email,password from users where email = ?";
         connect.con.query(sql, [email], (error, result) => {
             if (error) {
-                res.json([{ 'Error': true }, { 'Message': 'Error in Code' }]);
+                res.json([{ 'Error': true }, {'Success': false}, { 'Message': 'Error in Code' }]);
             }
             else {
                 if (result.length == 0) {
-                    res.json([{ 'Error': true }, { 'Message': 'Email Not Found' }]);
+                    res.json([{ 'Error': true }, {'Success': false}, { 'Message': 'Email Not Found' }]);
                 }
                 else {
                     let hashpassword = result[0]['password'];
                     sequrity.conformpassword(password, hashpassword).then((match) => {
                         if (match === false) {
-                            res.json([{ 'Error': true }, { 'Message': 'Login Attempt Failed' }]);
+                            res.json([{ 'Error': true }, {'Success': false}, { 'Message': 'Login Attempt Failed' }]);
                         }
                         else {
-                            res.json([{ 'Error': false }, { 'Success': true }, { 'Message': 'Login Successfully' }]);
+                            res.json([{ 'Error': false }, {'Success': true}, { 'Message': 'Login Successfully' }]);
                         }
                     })
                 }
@@ -104,23 +104,23 @@ function Login(req, res) {
 function changepassword(req, res) {
     let { id, password, newpassword } = req.body;
     if (id === undefined || password === undefined || newpassword === undefined) {
-        res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
+        res.json([{ 'Error': true }, {'Success': false}, { 'Message': 'Input is Missing' }]);
     }
     else {
         let sql = 'select password from users where id = ?';
         connect.con.query(sql, [id], (error, result) => {
             if (error) {
-                res.json([{ 'Error': true }, { 'Message': 'Error in Code' }]);
+                res.json([{ 'Error': true }, {'Success': false}, { 'Message': 'Error in Code' }]);
             }
             else {
                 if (result.length === 0) {
-                    res.json([{ 'Error': true }, { 'Message': 'User not Found' }]);
+                    res.json([{ 'Error': true }, {'Success': false}, { 'Message': 'User not Found' }]);
                 }
                 else {
                     let hashpassword = result[0]['password'];
                     sequrity.conformpassword(password, hashpassword).then((match) => {
                         if (!match) {
-                            res.json([{ 'Error': true }, { 'Message': 'Change Password Attempt Failed' }]);
+                            res.json([{ 'Error': true }, {'Success': false}, { 'Message': 'Change Password Attempt Failed' }]);
                         }
                         else {
                             sequrity.gethashpassword(newpassword).then((hash) => {
@@ -128,10 +128,10 @@ function changepassword(req, res) {
                                 let Value = [hash, id];
                                 connect.con.query(sql, Value, (err, output) => {
                                     if (err) {
-                                        res.json([{ 'Error': true }, { 'Message': 'Error in Code' }]);
+                                        res.json([{ 'Error': true }, {'Success': false}, { 'Message': 'Error in Code' }]);
                                     }
                                     else {
-                                        res.json([{ 'Error': false }, { 'Success': true }, { 'Message': 'Password Changed Successfully' }, { 'id': output.affectedRows }]);
+                                        res.json([{ 'Error': false }, {'Success': true}, { 'Message': 'Password Changed Successfully' }, { 'id': output.affectedRows }]);
                                         // console.log(output);
                                     }
                                 });
@@ -149,17 +149,17 @@ function changepassword(req, res) {
 function Forgotpassword(req, res) {
     let { email } = req.body;
     if (email === undefined) {
-        res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
+        res.json([{ 'Error': true }, {'Success': false}, { 'Message': 'Input is Missing' }]);
     }
     else {
         let sql = 'select  id from users where email = ?';
         connect.con.query(sql, [email], (error, result) => {
             if (error) {
-                res.json([{ 'Error': true }, { 'Message': 'Error in Code' }]);
+                res.json([{ 'Error': true }, {'Success': false}, { 'Message': 'Error in Code' }]);
             }
             else {
                 if (result.length === 0) {
-                    res.json([{ 'Error': true }, { 'Message': 'User Not Found' }]);
+                    res.json([{ 'Error': true }, {'Success': false}, { 'Message': 'User Not Found' }]);
                 }
                 else {
                     let random = sequrity.GenOtp(6);
@@ -169,13 +169,13 @@ function Forgotpassword(req, res) {
                         let Value = [hash, email];
                         connect.con.query(sql, Value, (err, output) => {
                             if (err) {
-                                res.json([{ 'Error': true }, { 'Message': 'Error in Code' }]);
+                                res.json([{ 'Error': true }, {'Success': false}, { 'Message': 'Error in Code' }]);
                             }
                             else {
                                 let sub = 'Password Reset OTP';
                                 let text = `Your password  is ${random}`;
                                 Mail.sendMail(email, sub, text)
-                                res.json([{ 'Error': false }, { 'Success': true }, { 'Message': 'Password are sent in your ' + email }]);
+                                res.json([{ 'Error': false }, {'Success': true}, { 'Message': 'Password are sent in your ' + email }]);
 
 
                             }

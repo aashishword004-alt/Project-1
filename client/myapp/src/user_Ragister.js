@@ -1,4 +1,25 @@
+import axios from 'axios';
+
+
 function Ragister() {
+
+     let url = "http://localhost:5000/users/Ragister";
+   
+     axios({
+        method : "POST",
+        url : url,
+        responseType : "json",
+     }).then((res) =>{
+
+
+     }).catch((Error) =>{
+        if(Error === "Network Error"){
+            alert("Please check your internet connection and try again.");
+        }   
+
+     });
+
+
     return (
         <div>
             <meta charSet="UTF-8" />
