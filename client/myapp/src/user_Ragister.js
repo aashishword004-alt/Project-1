@@ -60,15 +60,18 @@ function Ragister() {
         e.preventDefault();
 
         let url = "http://localhost:5000/users/Ragister";
-
-        axios.post(url, {
-            name: name,
-            email: email,
-            number: number,
-            password: password,
-            confirmPassword: confirmPassword
-        })
-            .then((response) => {
+        let form = new FormData();
+        form.append('name', name);
+        form.append('email', email);
+        form.append('number', number);
+        form.append('password', password);
+        form.append('confirmPassword', confirmPassword);
+        axios({
+            method: 'post',
+            url: url,
+            responseType: 'json',
+            data: form
+        }).then((response) => {
                 console.log(response.data);
 
                 let Error = response.data[0].Error;
