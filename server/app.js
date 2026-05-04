@@ -2,10 +2,8 @@ let express = require('express');
 let app = express();
 
 // middlware 
-let bodyparser = require('body-parser');
-app.use(bodyparser.json());
-app.use(bodyparser.urlencoded({extended :  true}));
-
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 // Apis Module
 let user = require('./apis/users1')
 // Routee 

@@ -1,60 +1,96 @@
 import axios from 'axios';
-import {useState} from 'react';
+import { useState } from 'react';
 
 
 function Ragister() {
 
     // name, email, number , password, confirmPassword key value pair
-   let [name , setName] = useState("");
-   let [email , setEmail] = useState("");
-   let [number , setNumber] = useState("");
-   let [password , setPassword] = useState("");
-   let [confirmPassword , setConfirmPassword] = useState("");
+    let [name, setName] = useState("");
+    let [email, setEmail] = useState("");
+    let [number, setNumber] = useState("");
+    let [password, setPassword] = useState("");
+    let [confirmPassword, setConfirmPassword] = useState("");
 
+    // let UserRagister = (e) => {
+
+    //     let url = "http://localhost:5000/users/Ragister";
+    //     let form = new FormData();
+    //     form.append('name', name);
+    //     form.append('email', email);
+    //     form.append('number', number);
+    //     form.append('password', password);
+    //     form.append('confirmPassword', confirmPassword);
+
+    //     axios({
+    //         method: 'post',
+    //         url: url,
+    //         responseType: 'json',
+    //         data: form
+    //     }).then((response) => {
+    //         console.log(response.data);
+    //          let Error = response.data[0].Error;
+    //          if(Error !== false)
+    //          {
+    //             alert(Error);
+    //          }else{
+    //             let Success = response.data[1].Message;
+    //             let Message = response.data[2].Message;
+    //             if(Success === false) 
+    //                 {
+    //                     console.log(Message);
+    //                 }
+    //                 else{
+    //                     alert(Message);
+
+    //                 }
+    //             }
+
+    //     }).catch((error) => {
+    //         if (error === 'NETWORK_ERROR') {
+    //             alert("Network Error. Please check your connection and try again.");
+    //         }
+
+    //     })
+
+
+
+    //     e.preventDefault();
+    // }
     let UserRagister = (e) => {
-   
+        e.preventDefault();
+
         let url = "http://localhost:5000/users/Ragister";
-        let form = new FormData();
-        form.append("name", name);
-        form.append("email", email);
-        form.append("number", number);
-        form.append("password", password);
-        form.append("confirmPassword", confirmPassword);
-       
-        axios({
-            method: 'post',
-            url: url,
-            responseType: 'json',
-            data: form
-        }).then((response) => {
-            console.log(response.data);
-             let Error = response.data[0].Error;
-             if(Error !== false)
-             {
-                alert(Error);
-             }else{
-                let Success = response.data[1].Message;
-                let Message = response.data[2].Message;
-                if(Success === false) 
-                    {
+
+        axios.post(url, {
+            name: name,
+            email: email,
+            number: number,
+            password: password,
+            confirmPassword: confirmPassword
+        })
+            .then((response) => {
+                console.log(response.data);
+
+                let Error = response.data[0].Error;
+
+                if (Error !== false) {
+                    alert("Error occurred");
+                } else {
+                    let Success = response.data[1].Success;
+                    let Message = response.data[2].Message;
+
+                    if (Success === false) {
                         console.log(Message);
-                    }
-                    else{
-                        alert(Message);
-                    
+                    } else {
+                        alert(Message );
                     }
                 }
-
-        }).catch((error) => {
-            if (error === 'NETWORK_ERROR') {
-                alert("Network Error. Please check your connection and try again.");
-            }
-        })
-
-
-
-        e.preventDefault();
-    }
+            })
+            .catch((error) => {
+                console.log(error);
+                alert("Something went wrong");
+            });
+    };
 
 
     return (
@@ -83,45 +119,45 @@ function Ragister() {
                                         <span className="input-group-text">
                                             <i className="bi bi-person" />
                                         </span>
-                                        <input type="text" 
-                                         value={name} onChange={(e) => setName(e.target.value)}
-                                        className="form-control" placeholder="Full Name" required />
+                                        <input type="text"
+                                            value={name} onChange={(e) => setName(e.target.value)}
+                                            className="form-control" placeholder="Full Name" required />
                                     </div>
                                     {/* Email */}
                                     <div className="input-group mb-4">
                                         <span className="input-group-text">
                                             <i className="bi bi-envelope" />
                                         </span>
-                                        <input type="email" 
-                                         value={email} onChange={(e) => setEmail(e.target.value)}
-                                        className="form-control" placeholder="Email Address" required />
+                                        <input type="email"
+                                            value={email} onChange={(e) => setEmail(e.target.value)}
+                                            className="form-control" placeholder="Email Address" required />
                                     </div>
                                     {/* Phone */}
                                     <div className="input-group mb-4">
                                         <span className="input-group-text">
                                             <i className="bi bi-telephone" />
                                         </span>
-                                        <input type="tel" 
-                                         value={number} onChange={(e) => setNumber(e.target.value)}
-                                        className="form-control" placeholder="Phone Number" required />
+                                        <input type="tel"
+                                            value={number} onChange={(e) => setNumber(e.target.value)}
+                                            className="form-control" placeholder="Phone Number" required />
                                     </div>
                                     {/* Password */}
                                     <div className="input-group mb-4">
                                         <span className="input-group-text">
                                             <i className="bi bi-lock-fill" />
                                         </span>
-                                        <input type="password" 
-                                         value={password} onChange={(e) => setPassword(e.target.value)}
-                                        className="form-control" placeholder="Password" required />
+                                        <input type="password"
+                                            value={password} onChange={(e) => setPassword(e.target.value)}
+                                            className="form-control" placeholder="Password" required />
                                     </div>
                                     {/* Confirm Password */}
                                     <div className="input-group mb-4">
                                         <span className="input-group-text">
                                             <i className="bi bi-lock-fill" />
                                         </span>
-                                        <input type="password" 
-                                         value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
-                                        className="form-control" placeholder="Confirm Password" required />
+                                        <input type="password"
+                                            value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+                                            className="form-control" placeholder="Confirm Password" required />
                                     </div>
                                     {/* Terms Checkbox */}
                                     <div className="form-check mb-4">
