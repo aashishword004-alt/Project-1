@@ -31,6 +31,7 @@ function Users(req, res) {
 // Post request 
 // Ragister API 
 function Ragistretion(req, res) {
+    console.log(req.body);
     let { name, email, number , password, confirmPassword } = req.body;
     if (name === undefined || email === undefined || number === undefined || password === undefined || confirmPassword === undefined) {
         res.json([{ 'Error': true }, {'Success': false}, { 'Message': 'Input is Missing' }]);
