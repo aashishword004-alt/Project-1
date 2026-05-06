@@ -20,48 +20,6 @@ let connect = require('../database/connection');
 const COMPANY = '/Company';
 // recruiter register
 
-// app.post(COMPANY + '/Register', (req, res) => {
-//     let { name, email, password, role } = req.body;
-//     if (name === undefined || email === undefined || password === undefined || role === undefined) {
-
-//         res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
-//     }
-//     else {
-
-//         if (role === 'admin') {
-//             res.json([{ 'Error': true }, { 'Message': 'Cannot register as admin' }])
-//         }
-//         else {
-//             let status = 'approved'
-//             if (role === 'recruiter')
-//                 status = 'panding'
-//             let sql = "INSERT INTO users( name, email, password,role) VALUES (?,?,?,?)";
-//             sequrity.gethashpassword(password).then((hash) => {
-//                 let Value = [name, email, hash, role];
-//                 connect.con.query(sql, Value, (error, result) => {
-//                     if (error) {
-//                         if (error.errno === 1062) {
-//                             res.json([{ 'Error': true }, { 'Message': 'Invalid Email Address' }]);
-//                         }
-//                         else {
-//                             console.log("Error in inserting data ", error);
-//                             res.json([{ 'Error': true }, { 'Message': 'Error in inserting data' }]);
-//                         }
-//                     }
-
-//                     else {
-//                         res.json([{ 'Error': false }, { 'Success': true }, { 'Message': 'User Registered Successfully' }, { "id": result.insertId }]);
-//                     }
-
-//                 });
-//             });
-
-//         }
-
-
-//     }
-
-// });
 
 // recuiter Login
 app.post(COMPANY + '/Login', (req, res) => {
@@ -186,7 +144,6 @@ app.put(COMPANY + '/Forgot_Password', (req, res) => {
     }
 
 });
-
 
 
 
