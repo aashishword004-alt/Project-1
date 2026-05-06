@@ -1,7 +1,7 @@
 
 // Modules
 let sequrity = require('../module/password');
-let Mail = require('../module/mail')
+let Mail = require('./mail')
 
 // database connection
 let connect = require('../database/connection');

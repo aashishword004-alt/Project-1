@@ -17,12 +17,12 @@ let Mail = require('./mail')
 let connect = require('../database/connection');
 
 // Routes 
-const COMPANY = '/Company';
+const COMPANY = '/company';
 // recruiter register
 
 
 // recuiter Login
-app.post(COMPANY + '/Login', (req, res) => {
+app.post(COMPANY + '/login', (req, res) => {
 
     let { email, password } = req.body;
     if (!email || !password) {
@@ -56,7 +56,7 @@ app.post(COMPANY + '/Login', (req, res) => {
 });
 
 // Admin ChangePassword 
-app.put(COMPANY + '/Change_Password', (req, res) => {
+app.put(COMPANY + '/change_password', (req, res) => {
     let { id, password, newpassword } = req.body;
     if (!id || !password || !newpassword) {
         res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
@@ -99,7 +99,7 @@ app.put(COMPANY + '/Change_Password', (req, res) => {
 })
 
 // Admin Forgoot Password 
-app.put(COMPANY + '/Forgot_Password', (req, res) => {
+app.put(COMPANY + '/forgot_password', (req, res) => {
     let { email } = req.body;
     if(!email)
     {
@@ -118,7 +118,7 @@ app.put(COMPANY + '/Forgot_Password', (req, res) => {
                     res.json([{'Error' : true} ,{'Message' : 'Forgot Password Attempy faild'}])
                 }
                  else {
-                    let random = seqirity.GenOtp(6)
+                    let random = sequrity.GenOtp(6)
                     sequrity.gethashpassword(random).then((hash) =>{
                         let sql = 'update users set password = ? where email = ?';
                         let value  = [hash,email];
@@ -149,7 +149,7 @@ app.put(COMPANY + '/Forgot_Password', (req, res) => {
 
 let port = 3000;
 app.listen(port, () => {
-    console.log('Serever are Listen on' + port);
+    console.log('Serever are Listen on ' +  port);
 
 })
 
