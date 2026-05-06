@@ -3,7 +3,7 @@ let app = exprss();
 
 // Modules
 let sequrity = require('../module/password');
-let Mail = require('../module/mail')
+let Mail = require('./mail')
 
 
 // database connection

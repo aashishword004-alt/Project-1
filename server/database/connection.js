@@ -1,4 +1,4 @@
-let adp = require('./adpter');
+let adp = require('../../adpter');
 let mysql = require('mysql');
 
 let con = mysql.createConnection({
