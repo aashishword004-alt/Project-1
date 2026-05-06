@@ -11,7 +11,7 @@ let jwt = require('jsonwebtoken');
 
 // modules 
 let sequrity = require('../module/password')
-let Mail = require('../module/mail')
+let Mail = require('./mail')
 
 // databse 
 let connect = require('../database/connection');
