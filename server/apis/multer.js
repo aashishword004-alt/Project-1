@@ -10,6 +10,17 @@ const storage = multer.diskStorage({
     }
 });
 
+const filterfile = (req,file,cb) =>{
+     if(file.mimetype === "image/jpeg")
+     {
+         cb(null,true);
+     }
+     else
+     {
+         cb(null,false + "only jpeg file is allowed");
+     }
+}
+
 const upload = multer({ storage });
 
 module.exports = upload;

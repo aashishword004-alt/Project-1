@@ -7,11 +7,11 @@ const cors = require('cors');
 
 let upload = require('../apis/multer');
 
-app.use(cors(
-    origin = "http://localhost:5000",
-    methods = ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials = true  
-));
+app.use(cors({
+    origin: "http://localhost:5000",
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true  
+}));
 
 app.post('/upload', upload.single('file'), (req, res) => {
 //    res.send("File Uploaded Successfully");
