@@ -5,7 +5,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const cors = require('cors');
 
+// const connect = require('../database/connection')
+
 let upload = require('../apis/multer');
+
 
 app.use(cors({
     origin: "http://localhost:5000",
@@ -14,8 +17,8 @@ app.use(cors({
 }));
 
 app.post('/upload', upload.single('file'), (req, res) => {
-//    res.send("File Uploaded Successfully");
-console.log(req.body , req.file);
+    console.log(req.body , req.file);
+    res.send("File Uploaded Successfully");
 });
 
 
