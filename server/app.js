@@ -16,8 +16,8 @@ app.use(cors(
 
 // Apis Module
 let user = require('./apis/users1')
-// Routee 
 
+// Route
 const USER_ROUTE = '/users';
 
 // User APIS
