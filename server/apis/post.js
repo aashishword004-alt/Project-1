@@ -6,7 +6,7 @@ app.use(express.urlencoded({ extended: true }));
 const cors = require('cors');
 
 
-// const connect = require('../database/connection')
+const connect = require('../database/connection')
 
 
 
@@ -19,7 +19,79 @@ app.use(cors({
     credentials: true
 }));
 
-app.post('/upload', upload.single('file'), (req, res) => {
+
+app.get('/posts', (req, res) => {
+
+    let sql = "SELECT * FROM posts ORDER BY post_id DESC";
+    connect.con.query(sql, (error, result) => {
+        if (error) {
+            res.json([{ 'error': true },
+            {
+                'success': false
+            },
+            {
+                'message': 'Somthing wrong in system'
+            }
+            ]);
+        }
+        else{
+            res.json([{'error' : false},
+                {
+                    'success' : true
+                },
+                {
+                    'data' : result
+                }
+            ])
+        }
+    })
+
+});
+
+
+// for file upload 
+app.post('/upload', upload.single('media'), (req, res) => {
+
+    let { content } = req.body;
+    let media = req.file.filename;
+    if (!content || !media) {
+        res.json([{ 'error': true },
+        {
+            'success': false,
+        },
+        {
+            'message': 'input is missing'
+        }
+        ])
+    }
+    else {
+        let sql = "INSERT INTO posts (content, media) VALUES (?, ?)";
+        let values = [content, media];
+        connect.con.query(sql, values, (error, result) => {
+            if (error) {
+                res.json([{ 'error': true }, {
+                    'success': false,
+                }
+                    ,
+                {
+                    'message': 'Somthing wrong in system'
+                }]);
+            }
+            else {
+                res.json([{ 'error': false },
+                {
+                    'success': true
+                },
+                {
+                    'message': 'Post Uploded Successfully'
+                }
+                ]);
+
+            }
+        });
+    }
+
+
 });
 
 
