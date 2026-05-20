@@ -1,23 +1,27 @@
 let express = require('express');
 let app = express();
-
+const path = require('path');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const cors = require('cors');
-
-
 const connect = require('../database/connection')
-
-
-
 let upload = require('../apis/multer');
 
 
+
 app.use(cors({
-    origin: "http://localhost:5000",
+    origin: "*",
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
+    credentials: false
 }));
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); 
+
+
+ 
+
+
+
 
 
 app.get('/posts', (req, res) => {
@@ -49,7 +53,7 @@ app.get('/posts', (req, res) => {
 });
 
 
-// for file upload 
+//  file upload 
 app.post('/upload', upload.single('media'), (req, res) => {
 
     let { content } = req.body;
@@ -96,7 +100,7 @@ app.post('/upload', upload.single('media'), (req, res) => {
 
 
 
-let port = 5000;
+let port = 3000;
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 })
