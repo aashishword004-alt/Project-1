@@ -15,15 +15,10 @@ app.use(cors({
     credentials: false
 }));
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); 
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 
- 
-
-
-
-
-
+// for fatching all posts
 app.get('/posts', (req, res) => {
 
     let sql = "SELECT * FROM posts ORDER BY post_id DESC";
@@ -56,9 +51,10 @@ app.get('/posts', (req, res) => {
 //  file upload 
 app.post('/upload', upload.single('media'), (req, res) => {
 
-    let { content } = req.body;
+    let { content,user_id } = req.body;
     let media = req.file.filename;
-    if (!content || !media) {
+    let mediatype = req.file.mimetype;
+    if (!content || !media || !mediatype) {
         res.json([{ 'error': true },
         {
             'success': false,
@@ -66,11 +62,11 @@ app.post('/upload', upload.single('media'), (req, res) => {
         {
             'message': 'input is missing'
         }
-        ])
+        ]);
     }
     else {
-        let sql = "INSERT INTO posts (content, media) VALUES (?, ?)";
-        let values = [content, media];
+        let sql = "INSERT INTO posts (content, media, mediatype) VALUES (?, ?, ?)";
+        let values = [content, media , mediatype];
         connect.con.query(sql, values, (error, result) => {
             if (error) {
                 res.json([{ 'error': true }, {
@@ -94,8 +90,6 @@ app.post('/upload', upload.single('media'), (req, res) => {
             }
         });
     }
-
-
 });
 
 
