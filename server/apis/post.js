@@ -49,9 +49,10 @@ app.get('/posts', (req, res) => {
 
 
 //  file upload 
-app.post('/upload', upload.single('media'), (req, res) => {
+app.post('/upload/:id', upload.single('media'), (req, res) => {
 
-    let { user_id ,content} = req.body;
+    let { content} = req.body;
+    let user_id = req.params.id;
     
     let media = req.file.filename;
     let media_type = req.file.mimetype;
@@ -95,7 +96,6 @@ app.post('/upload', upload.single('media'), (req, res) => {
         });
     }
 });
-
 
 
 let port = 3000;
