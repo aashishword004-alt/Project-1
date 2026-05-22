@@ -21,7 +21,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 // for fatching all posts
 app.get('/posts', (req, res) => {
 
-    let sql = "SELECT * FROM posts ORDER BY post_id DESC";
+    let sql = "SELECT user_id, content, media, media_type FROM posts ORDER BY post_id DESC";
     connect.con.query(sql, (error, result) => {
         if (error) {
             res.json([{ 'error': true },
@@ -51,10 +51,12 @@ app.get('/posts', (req, res) => {
 //  file upload 
 app.post('/upload', upload.single('media'), (req, res) => {
 
-    let { content,user_id } = req.body;
+    let { user_id ,content} = req.body;
+    
     let media = req.file.filename;
-    let mediatype = req.file.mimetype;
-    if (!content || !media || !mediatype) {
+    let media_type = req.file.mimetype;
+
+    if ( !user_id || !content || !media) {
         res.json([{ 'error': true },
         {
             'success': false,
@@ -65,10 +67,12 @@ app.post('/upload', upload.single('media'), (req, res) => {
         ]);
     }
     else {
-        let sql = "INSERT INTO posts (content, media, mediatype) VALUES (?, ?, ?)";
-        let values = [content, media , mediatype];
+        let sql = "INSERT INTO posts (user_id, content, media, media_type) VALUES (?, ?, ?, ?)";
+        let values = [user_id, content, media, media_type];
         connect.con.query(sql, values, (error, result) => {
             if (error) {
+                console.log(error);
+                
                 res.json([{ 'error': true }, {
                     'success': false,
                 }
