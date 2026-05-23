@@ -37,12 +37,12 @@ const connect = require('../database/connection')
 let uploadpost = (req, res) => {
 
     let {user_id, content} = req.body;
-    // let user_id = req.params.id;
+    let user_id = req.params.id;
     
     let media = req.file.filename;
     let media_type = req.file.mimetype;
 
-    if ( !user_id || !content || !media) {
+    if (  !content || !media) {
         res.json([{ 'error': true },
         {
             'success': false,

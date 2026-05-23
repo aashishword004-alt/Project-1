@@ -33,27 +33,27 @@ const POST_ROUTE = '/posts';
 
 
 // Ragister API
-app.post(USER_ROUTE + '/register' , (req,res) =>{user.Ragistretion(req,res)});
+app.post(USER_ROUTE + '/register', (req, res) => { user.Ragistretion(req, res) });
 
 // Login API
-app.post(USER_ROUTE + '/login' ,(req,res) =>{user.Login(req,res)});
+app.post(USER_ROUTE + '/login', (req, res) => { user.Login(req, res) });
 
 // chnage Password
-app.put(USER_ROUTE + '/changepassword' ,(req,res) =>{user.changepassword(req,res)});
+app.put(USER_ROUTE + '/changepassword', (req, res) => { user.changepassword(req, res) });
 
 // Forgot Password 
-app.put(USER_ROUTE + '/forgotpassword' , (req,res) =>{user.Forgotpassword(req,res)});
+app.put(USER_ROUTE + '/forgotpassword', (req, res) => { user.Forgotpassword(req, res) });
 
 
 // Admin Apis 
 
 const ADMIN = '/admin'
-app.post(ADMIN + '/login' ,(req,res) =>{})
+app.post(ADMIN + '/login', (req, res) => {})
 
 
 
 // Post Apis
-app.post(POST_ROUTE + '/upload' , upload.single('media'), (req,res) =>{post.uploadpost(req,res)});
+app.post(POST_ROUTE + '/upload/:id', upload.single('media'), (req, res) => { post.uploadpost(req, res) });
 
 
 

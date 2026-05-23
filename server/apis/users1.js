@@ -198,8 +198,95 @@ function Forgotpassword(req, res) {
     }
 }
 
+ const  adminlogin = (req,res) => {
+      
+    let {email,password} = req.body;
+    if(email === undefined || password === undefined)
+    {
+        res.json([{'error' : true},
+            {
+                'success' : false
+            },
+            {
+                'message' : 'Input is Missing'
+            }
+        ]);
+    }
+    else{
+        let sql = 'select email,password,role from users where email = ?';
+        connect.con.query(sql,[email,password] ,(error,result) =>{
+            if(error)
+            {
+                res.json([{'error' : true},
+                    {
+                        'success' : false
+                    }
+                    ,{
+                        'message' : 'error in Code'
+                    }
+                ]);
+            }
+            else{
+                if(result.length === 0)
+                {
+                    res.json([{'error' : true},
+                        {
+                            'success' : false
+                        },
+                        {
+                            'message' : 'user not found'
+                        }
+                    ]);
+                }
+                else{
+                    let hashpassword = result[0]['password'];
+                    let role = result[0]['role'];
+                    if(role !== 'admin')
+                    {
+                        res.json([{'error' : true},
+                            {
+                                'success' : false
+                            },
+                            {
+                                'message' : 'Access Denied'
+                            }
+                        ]);
+                    }
+                    else{
+                        sequrity.conformpassword(password,hashpassword)
+                        .then((match) =>{
+                            if(!match)
+                            {
+                                res.json([{'error' : true},
+                                    {
+                                        'success' : false
+                                    },
+                                    {
+                                        'message' : 'Invalid Credentials'
+                                    }
+                                ]);
+                            }
+                            else {
+                                res.json([{'error' : false},
+                                    {
+                                        'success' : true
+                                    },
+                                    {
+                                        'message' : 'login successfully'
+                                    }
+                                ]);
+                            }
+                        })
+                    }
+                }
+            }
+        });
+    }
+}
+
 module.exports.Ragistretion = Ragistretion;
 module.exports.Login = Login;
 module.exports.changepassword = changepassword;
 module.exports.Forgotpassword = Forgotpassword;
+module.exports.adminlogin = adminlogin;
 
