@@ -2,4 +2,3 @@ node_modules/
 server/apis/.env
 server/apis/mail.js
 server/apis/adpter.js
-server/apis/users1.js 

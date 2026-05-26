@@ -30,7 +30,7 @@ function Users(req, res) {
 
 // Post request 
 // Ragister API 
-function Ragistretion(req, res) {
+function register(req, res) {
     console.log(req.body);
     
     if (req.body === undefined) {
@@ -78,7 +78,7 @@ function Ragistretion(req, res) {
 };
 
 // Login API
-function Login(req, res) {
+function login(req, res) {
     let { email, password } = req.body;
     if (email === undefined || password === undefined) {
         res.json([{ 'Error': true }, { 'Success': false }, { 'Message': 'Input is Missing' }]);
@@ -156,7 +156,7 @@ function changepassword(req, res) {
 }
 
 //Forgot Password API
-function Forgotpassword(req, res) {
+function forgotpassword(req, res) {
     let { email } = req.body;
     if (email === undefined) {
         res.json([{ 'Error': true }, { 'Success': false }, { 'Message': 'Input is Missing' }]);
@@ -284,9 +284,9 @@ function Forgotpassword(req, res) {
     }
 }
 
-module.exports.Ragistretion = Ragistretion;
-module.exports.Login = Login;
+module.exports.register = register;
+module.exports.login = login;
 module.exports.changepassword = changepassword;
-module.exports.Forgotpassword = Forgotpassword;
+module.exports.forgotpassword = forgotpassword;
 module.exports.adminlogin = adminlogin;
 

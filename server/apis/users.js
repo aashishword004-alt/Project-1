@@ -150,7 +150,7 @@ app.put(ROUTE + '/Change_password', (req, res) => {
 });
 
 //Forgot Password API
-app.put(ROUTE + '/Forgot_password', (req, res) => {
+app.put(ROUTE + '/forgot_password', (req, res) => {
     let { email } = req.body;
     if (email === undefined) {
         res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
