@@ -51,6 +51,6 @@ let sequrity = {
 
 }
 
-module.exports = sequrity;
+module.exports = security;
 
 
