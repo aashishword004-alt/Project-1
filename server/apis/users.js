@@ -285,10 +285,11 @@ app.put(ADMIN + '/chnage_password', (req, res) => {
         ]);
     }
     else {
-        let sql = 'select password from users wher id = ?'
+        let sql = 'select password from users where id = ?'
         connect.con.query(sql, [id], (error, result) => {
             if (error) {
                 res.json([{ 'error': true },
+                    console.log(error),
                 {
                     'success': false
                 },
@@ -309,7 +310,7 @@ app.put(ADMIN + '/chnage_password', (req, res) => {
                     ]);
                 }
                 else {
-                    let hashpassword = result[0].['password'];
+                    let hashpassword = result[0]['password'];
                     security.conformpassword(password, hashpassword).
                         then((match) => {
                             if (!match) {
@@ -328,7 +329,7 @@ app.put(ADMIN + '/chnage_password', (req, res) => {
                                  then((hash) =>{
                                         let sql = 'update users set password = ? where id = ?';
                                         let value = [hash,id]
-                                        connect.con.quer( sql, value ,(err,output) =>{
+                                        connect.con.query( sql, value ,(err,output) =>{
                                              if(err)
                                              {
                                                 res.json([{'error' : true},
@@ -338,9 +339,7 @@ app.put(ADMIN + '/chnage_password', (req, res) => {
                                                     {
                                                         'message' : 'somthing wormg in system'
                                                     },
-                                                    {
-                                                        'message' : 'somthing wormg in system'
-                                                    }
+                                                  
                                                 ]);
                                              }
                                              else{
@@ -363,6 +362,7 @@ app.put(ADMIN + '/chnage_password', (req, res) => {
     }
 
 });
+
 
 
 

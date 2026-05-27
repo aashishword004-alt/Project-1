@@ -2,7 +2,7 @@ const argon2 = require("argon2");
 let crypto = require('crypto');
 
 
-let sequrity = {
+let security  = {
     // hashpassword
     gethashpassword: async (password) => {
 

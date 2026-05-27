@@ -1,6 +1,6 @@
 
 // Modules
-let sequrity = require('../module/password');
+let security = require('../module/password');
 let Mail = require('./mail')
 
 // database connection
@@ -32,7 +32,7 @@ function Users(req, res) {
 // Ragister API 
 function register(req, res) {
     console.log(req.body);
-    
+
     if (req.body === undefined) {
         res.json([{ 'Error': true }, { 'Success': false }, { 'Message': 'Input is Missing' }]);
     }
@@ -48,7 +48,7 @@ function register(req, res) {
             }
             else {
                 let sql = "INSERT INTO users( name, email, number, password) VALUES (?,?,?,?)";
-                sequrity.gethashpassword(password).then((hash) => {
+                security.gethashpassword(password).then((hash) => {
                     let Value = [name, email, number, hash];
                     connect.con.query(sql, Value, (error, result) => {
                         if (error) {
@@ -96,7 +96,7 @@ function login(req, res) {
                 }
                 else {
                     let hashpassword = result[0]['password'];
-                    sequrity.conformpassword(password, hashpassword).then((match) => {
+                    security.conformpassword(password, hashpassword).then((match) => {
                         if (match === false) {
                             res.json([{ 'Error': true }, { 'Success': false }, { 'Message': 'Login Attempt Failed' }]);
                         }
@@ -128,12 +128,12 @@ function changepassword(req, res) {
                 }
                 else {
                     let hashpassword = result[0]['password'];
-                    sequrity.conformpassword(password, hashpassword).then((match) => {
+                    security.conformpassword(password, hashpassword).then((match) => {
                         if (!match) {
                             res.json([{ 'Error': true }, { 'Success': false }, { 'Message': 'Change Password Attempt Failed' }]);
                         }
                         else {
-                            sequrity.gethashpassword(newpassword).then((hash) => {
+                            security.gethashpassword(newpassword).then((hash) => {
                                 let sql = 'update users set password = ? where id = ?'
                                 let Value = [hash, id];
                                 connect.con.query(sql, Value, (err, output) => {
@@ -172,9 +172,9 @@ function forgotpassword(req, res) {
                     res.json([{ 'Error': true }, { 'Success': false }, { 'Message': 'User Not Found' }]);
                 }
                 else {
-                    let random = sequrity.GenOtp(6);
+                    let random = security.GenOtp(6);
                     console.log(random);
-                    sequrity.gethashpassword(random).then((hash) => {
+                    security.gethashpassword(random).then((hash) => {
                         let sql = 'update users set password = ? where email = ?';
                         let Value = [hash, email];
                         connect.con.query(sql, Value, (err, output) => {
@@ -198,86 +198,171 @@ function forgotpassword(req, res) {
     }
 }
 
- const  adminlogin = (req,res) => {
-      
-    let {email,password} = req.body;
-    if(email === undefined || password === undefined)
-    {
-        res.json([{'error' : true},
-            {
-                'success' : false
-            },
-            {
-                'message' : 'Input is Missing'
-            }
+const adminlogin = (req, res) => {
+
+    let { email, password } = req.body;
+    if (email === undefined || password === undefined) {
+        res.json([{ 'error': true },
+        {
+            'success': false
+        },
+        {
+            'message': 'Input is Missing'
+        }
         ]);
     }
-    else{
+    else {
         let sql = 'select email,password,role from users where email = ?';
-        connect.con.query(sql,[email,password] ,(error,result) =>{
-            if(error)
-            {
-                res.json([{'error' : true},
-                    {
-                        'success' : false
-                    }
-                    ,{
-                        'message' : 'error in Code'
-                    }
+        connect.con.query(sql, [email, password], (error, result) => {
+            if (error) {
+                res.json([{ 'error': true },
+                {
+                    'success': false
+                }
+                    , {
+                    'message': 'error in Code'
+                }
                 ]);
             }
-            else{
-                if(result.length === 0)
-                {
-                    res.json([{'error' : true},
-                        {
-                            'success' : false
-                        },
-                        {
-                            'message' : 'user not found'
-                        }
+            else {
+                if (result.length === 0) {
+                    res.json([{ 'error': true },
+                    {
+                        'success': false
+                    },
+                    {
+                        'message': 'user not found'
+                    }
                     ]);
                 }
-                else{
+                else {
                     let hashpassword = result[0]['password'];
                     let role = result[0]['role'];
-                    if(role !== 'admin')
-                    {
-                        res.json([{'error' : true},
-                            {
-                                'success' : false
-                            },
-                            {
-                                'message' : 'Access Denied'
-                            }
+                    if (role !== 'admin') {
+                        res.json([{ 'error': true },
+                        {
+                            'success': false
+                        },
+                        {
+                            'message': 'Access Denied'
+                        }
                         ]);
                     }
-                    else{
-                        sequrity.conformpassword(password,hashpassword)
-                        .then((match) =>{
-                            if(!match)
-                            {
-                                res.json([{'error' : true},
+                    else {
+                        security.conformpassword(password, hashpassword)
+                            .then((match) => {
+                                if (!match) {
+                                    res.json([{ 'error': true },
                                     {
-                                        'success' : false
+                                        'success': false
                                     },
                                     {
-                                        'message' : 'Invalid Credentials'
+                                        'message': 'Invalid Credentials'
                                     }
-                                ]);
+                                    ]);
+                                }
+                                else {
+                                    res.json([{ 'error': false },
+                                    {
+                                        'success': true
+                                    },
+                                    {
+                                        'message': 'login successfully'
+                                    }
+                                    ]);
+                                }
+                            })
+                    }
+                }
+            }
+        });
+    }
+}
+
+const adminchangepassword = (req, res) => {
+
+    let { id, password, newpassword } = req.body;
+    if (!id || !password || !newpassword) {
+        res.json([{ 'error': true },
+        {
+            'success': false
+        },
+        {
+            'message': 'input is missing'
+        }
+        ]);
+    }
+    else {
+        let sql = 'select password from users where id = ?'
+        connect.con.query(sql, [id], (error, result) => {
+            if (error) {
+                res.json([{ 'error': true },
+                console.log(error),
+                {
+                    'success': false
+                },
+                {
+                    'message': 'somthing wrong in server'
+                }
+                ]);
+            }
+            else {
+                if (result.length === 0) {
+                    res.json([{ 'error': true },
+                    {
+                        'success': false
+                    },
+                    {
+                        'message': 'user not found '
+                    }
+                    ]);
+                }
+                else {
+                    let hashpassword = result[0]['password'];
+                    security.conformpassword(password, hashpassword).
+                        then((match) => {
+                            if (!match) {
+                                res.json([{
+                                    'error': true
+                                },
+                                {
+                                    'success': false
+                                },
+                                {
+                                    'message': 'change password attempt faild'
+                                }]);
                             }
                             else {
-                                res.json([{'error' : false},
-                                    {
-                                        'success' : true
-                                    },
-                                    {
-                                        'message' : 'login successfully'
-                                    }
-                                ]);
+                                security.gethashpassword(newpassword).
+                                    then((hash) => {
+                                        let sql = 'update users set password = ? where id = ?';
+                                        let value = [hash, id]
+                                        connect.con.query(sql, value, (err, output) => {
+                                            if (err) {
+                                                res.json([{ 'error': true },
+                                                {
+                                                    'success': false
+                                                },
+                                                {
+                                                    'message': 'somthing wormg in system'
+                                                },
+
+                                                ]);
+                                            }
+                                            else {
+                                                res.json([{ 'error': false },
+                                                {
+                                                    'success': true
+                                                },
+                                                {
+                                                    'message': 'password change successfully '
+                                                }
+                                                ]);
+                                            }
+                                        });
+                                    });
                             }
-                        })
-                    }
+                        });
                 }
             }
         });
@@ -289,4 +374,6 @@ module.exports.login = login;
 module.exports.changepassword = changepassword;
 module.exports.forgotpassword = forgotpassword;
 module.exports.adminlogin = adminlogin;
+module.exports.adminchangepassword = adminchangepassword; 
+
 

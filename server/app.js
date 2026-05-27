@@ -50,6 +50,8 @@ app.put(USER_ROUTE + '/forgotpassword', (req, res) => { user.forgotpassword(req,
 const ADMIN = '/admin'
 app.post(ADMIN + '/login', (req, res) => {user.adminlogin(req, res)});
 
+app.put(ADMIN + '/changepassword' ,(req,res) =>{user.adminchangepassword(req,res)});
+
 
 
 // Post Apis
