@@ -167,7 +167,7 @@ app.put(ROUTE + '/forgot_password', (req, res) => {
                 }
                 else {
                     let random = security.GenOtp(6);
-                    console.log(random);
+                    // console.log(random);
                     security.gethashpassword(random).then((hash) => {
                         let sql = 'update users set password = ? where email = ?';
                         let Value = [hash, email];
@@ -289,7 +289,7 @@ app.put(ADMIN + '/chnage_password', (req, res) => {
         connect.con.query(sql, [id], (error, result) => {
             if (error) {
                 res.json([{ 'error': true },
-                    console.log(error),
+                console.log(error),
                 {
                     'success': false
                 },
@@ -321,39 +321,38 @@ app.put(ADMIN + '/chnage_password', (req, res) => {
                                     'success': false
                                 },
                                 {
-                                   'message' : 'change password attempt faild'
+                                    'message': 'change password attempt faild'
                                 }]);
                             }
-                            else{
-                                 security.gethashpassword(newpassword).
-                                 then((hash) =>{
+                            else {
+                                security.gethashpassword(newpassword).
+                                    then((hash) => {
                                         let sql = 'update users set password = ? where id = ?';
-                                        let value = [hash,id]
-                                        connect.con.query( sql, value ,(err,output) =>{
-                                             if(err)
-                                             {
-                                                res.json([{'error' : true},
-                                                    {
-                                                        'success' :  false
-                                                    },
-                                                    {
-                                                        'message' : 'somthing wormg in system'
-                                                    },
-                                                  
+                                        let value = [hash, id]
+                                        connect.con.query(sql, value, (err, output) => {
+                                            if (err) {
+                                                res.json([{ 'error': true },
+                                                {
+                                                    'success': false
+                                                },
+                                                {
+                                                    'message': 'somthing wormg in system'
+                                                },
+
                                                 ]);
-                                             }
-                                             else{
-                                                res.json([{'error' : false},
-                                                    {
-                                                        'success' : true
-                                                    },
-                                                    {
-                                                        'message' : 'password change successfully '
-                                                    }
+                                            }
+                                            else {
+                                                res.json([{ 'error': false },
+                                                {
+                                                    'success': true
+                                                },
+                                                {
+                                                    'message': 'password change successfully '
+                                                }
                                                 ]);
-                                             }
+                                            }
                                         });
-                                 });
+                                    });
                             }
                         });
                 }
@@ -363,6 +362,83 @@ app.put(ADMIN + '/chnage_password', (req, res) => {
 
 });
 
+app.put(ADMIN + '/forgotpassword', (req, res) => {
+
+    let { email } = req.body;
+    if (!email) {
+        res.json([{ 'error': true },
+        {
+            'success': false
+        },
+        {
+            'message': 'input is missing'
+        }
+        ]);
+
+    }
+    else {
+        let sql = 'select email , role from users where id = ?'
+        connect.con.query(sql, [id], (error, result) => {
+            if (error) {
+                res.json([{ 'error': true },
+                {
+                    'success': false
+                },
+                {
+                    'message': 'somthing wrong in system'
+                }
+                ]);
+            }
+            else {
+                let role = result[0]['role']
+                if (role !== admin) {
+                    res.json([{ 'error': true },
+                    {
+                        'success': false
+                    },
+                    {
+                        'message': 'invalid credits'
+                    }
+                    ]);
+                }
+                else {
+                    let random = security.GenOtp(6);
+                    security.gethashpassword(random).then((hash) => {
+                        let sql = 'update users set password = ? where email = ?'
+                        let value = [hash, email];
+                        connect.con.query(sql, value, (err, output) => {
+                            if (err) {
+                                res.json([{ 'error': true },
+                                {
+                                    'success': false
+                                },
+                                {
+                                    'message': 'somthing wrong in system again'
+                                }
+                                ]);
+                            }
+                            else {
+                                let sub = 'New Password'
+                                let message = `Your new Password is ${random}`
+                                Mail.sendMail(email, sub, message);
+                                res.json([{ 'error': false },
+                                {
+                                    'success': true
+                                },
+                                {
+                                    'message': 'password sent in email'
+                                }
+                                ])
+                            }
+                        });
+                    });
+
+                }
+            }
+        });
+    }
+
+});
 
 
 
