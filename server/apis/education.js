@@ -13,10 +13,12 @@ let connect = require('../database/connection')
 // routes
 let EDUC = '/education';
 
-app.get(EDUC, (req, res) => {
-    let sql = 'select *  from education'
-
-    connect.con.query(sql, (err, result) => {
+app.get(EDUC + '/:id', (req, res) => {
+    let person_id = req.params.id
+    
+    let sql = `select *  from education where ${person_id} = ?`
+    
+    connect.con.query(sql, [person_id], (err, result) => {
         if (err) {
             res.json([{ 'error': true },
             {
@@ -28,7 +30,19 @@ app.get(EDUC, (req, res) => {
             ])
         }
         else {
-            res.json(result)
+            if (result.length == 0) {
+                res.json([{ 'error': true },
+                {
+                    'success': false
+                },
+                {
+                    'message': 'such a not record found in server'
+                }
+                ])
+            }
+            else {
+                  res.json(result)
+            }
         }
     })
 });
