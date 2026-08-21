@@ -3,7 +3,7 @@ let app = express();
 
 // middleware;
 
-let bodyparser = require('body-parser');
+let bodyparser = require('body-parser')
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extends: true }));
 
@@ -14,35 +14,16 @@ let connect = require('../database/connection')
 let EDUC = '/education';
 
 app.get(EDUC + '/:id', (req, res) => {
-    let person_id = req.params.id
-    
-    let sql = `select *  from education where ${person_id} = ?`
-    
-    connect.con.query(sql, [person_id], (err, result) => {
-        if (err) {
-            res.json([{ 'error': true },
-            {
-                'success': false
-            },
-            {
-                'message': 'somthing wrong in server'
-            }
-            ])
+    let id = req.params.id
+
+    let sql = 'select * from education where person_id = ?'
+    connect.con.query(sql, [id], (error, result) => {
+        if(error)
+        {
+            res.json([{'error' : true}])
         }
-        else {
-            if (result.length == 0) {
-                res.json([{ 'error': true },
-                {
-                    'success': false
-                },
-                {
-                    'message': 'such a not record found in server'
-                }
-                ])
-            }
-            else {
-                  res.json(result)
-            }
+        else{
+            res.json(result)
         }
     })
 });
@@ -91,7 +72,7 @@ app.post(EDUC + '/upload', (req, res) => {
 
 // for education details update
 app.put(EDUC + '/update', (req, res) => {
-    let { education_id, name_uni, degree_name, course_name, passing_year, grade, percentage } = req.body;
+    let { education_id, name_uni, degree_name, course_name, passing_year, grade, percentage } = req.body
 
     if (!education_id || !name_uni || !degree_name || !course_name || !passing_year || !grade || !percentage) {
         {
