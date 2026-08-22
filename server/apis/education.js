@@ -18,12 +18,31 @@ app.get(EDUC + '/:id', (req, res) => {
 
     let sql = 'select * from education where person_id = ?'
     connect.con.query(sql, [id], (error, result) => {
-        if(error)
-        {
-            res.json([{'error' : true}])
+        if (error) {
+            res.json([{ 'error': true },
+            {
+                'success': false
+            },
+            {
+                'message': 'somthing wrong in server'
+            }
+            ])
         }
-        else{
-            res.json(result)
+        else {
+            if (result.length === 0) {
+                res.json([{ 'error': false},
+                
+                {
+                    'success': false
+                },
+                {
+                    'message': 'data not found ?'
+                }
+                ])
+            }
+            else {
+                res.json(result)
+            }
         }
     })
 });
