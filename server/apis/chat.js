@@ -1,8 +1,10 @@
 let express = require('express')
 let app = express()
 
+
+// sneder / reciever / seen / react delete 
 app.get( '/chat' ,(req,res) =>{
-    res.json('port are running')
+   let {sender , reciver , message , timestep  , date , response , replay  , add  , file_cone  }  = req.body
 
 })
 
