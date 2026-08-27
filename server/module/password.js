@@ -5,22 +5,16 @@ let crypto = require('crypto');
 let security  = {
     // hashpassword
     gethashpassword: async (password) => {
-
-        try {
-
+         try {
             const hash = await argon2.hash(password);
             return hash;
-
         }
         catch (err) {
             console.error("Hashing Faild ", err);
-
         }
-
     },
-
-
-    conformpassword: async (password, hashpaaword) => {
+   
+      conformpassword: async (password, hashpaaword) => {
 
         try {
             if (await argon2.verify(hashpaaword, password)) {
