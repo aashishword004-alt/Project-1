@@ -7,7 +7,7 @@ app.use(bodyarser.json())
 app.use(bodyarser.urlencoded({ extended: true }))
 
 
-const CHAT = '/message'
+const CHAT = '/service'
 
 
 
@@ -25,12 +25,12 @@ app.get(CHAT, (req, res) => {
     })
 })
 
-
+// for start conversation  
 app.post(CHAT + '/conversation', (req, res) => {
     let { sender, receiver } = req.body
     // console.log(sender, receiver)
     if (!sender || !receiver) {
-        res.json([{ 'error': true },
+       return res.json([{ 'error': true },
         {
             'success': false
         },
@@ -46,19 +46,19 @@ app.post(CHAT + '/conversation', (req, res) => {
     let value = [sender, receiver]
     connect.con.query(sql, value, (error, find) => {
         if (error) {
-            res.json([[{ 'error': true },
+           return res.json([[{ 'error': true },
             {
                 'success': false
             },
             {
-                'message': 'somthing wrong in server'
+                'message': 'somthing wrong in server for find '
             }
             ]])
         }
         else {
             if (find.length > 0) {
 
-                res.json([{
+               return res.json([{
                     'conversationid': find[0].conversation_id
                 }])
             }
@@ -66,24 +66,51 @@ app.post(CHAT + '/conversation', (req, res) => {
 
                 let sql = `insert into conversations (type) values (?)`
                 let value = 'direct'
-                connect.con.query(sql,value,((err,result) =>{
-                    if(err)
-                    {
+                connect.con.query(sql, value, ((err, result) => {
+                    if (err) {
                         // console.log(err)
-                        res.json([{'error' : true},
-                            {
-                                'success' : false
-                            },
-                            {
-                                'message' : 'somthing wrong in server'
-                            }
+                       return res.json([{ 'error': true },
+                        {
+                            'success': false
+                        },
+                        {
+                            'message': 'somthing wrong in server in insert '
+                        }
                         ])
                     }
-                    else{
-                        
-                              res.json('row inserted')
+                    else {
+                        let conversation_id = result.insertId
+                        let sql = `insert into conversation_participants (conversation_id , user_id ) value (?,?), (?,?)`
+                        let values = [conversation_id, sender, conversation_id, receiver]
+                        connect.con.query(sql, values, (err, output) => {
+                            console.log(err)
+                            if (err) {
+                               return res.json([{ 'error': true },
+                                {
+                                    'success': false
+                                },
+                                {
+                                    'message': 'somthinf wrong in server_2'
+                                }
+                                ])
+                            }
+                            else {
+                              return  res.json([{ 'error': false },
+                                {
+                                    'success': true
+                                },
+                                {
+                                    'message': 'the conversation is start'
+                                },
+                                {
+                                    'id': conversation_id 
+                                }
+                                ])
+                            }
+                        })
+
                     }
-                    
+
 
                 }))
 
@@ -94,9 +121,10 @@ app.post(CHAT + '/conversation', (req, res) => {
 })
 
 
-app.post(CHAT, (req, res) => {
+// for messages 
+app.post(CHAT + '/message', (req, res) => {
     let { conversation_id, sender_id, content } = req.body
-    console.log(conversation_id, sender_id, content)
+    // console.log(conversation_id, sender_id, content)
     if (!conversation_id || !sender_id || !content) {
         res.json([{ 'error': true },
         {
@@ -125,7 +153,7 @@ app.post(CHAT, (req, res) => {
                     'message': 'message sent successfully'
                 },
                 {
-                    'result': result.insertID
+                    'result': result.insertId
                 }])
 
             }
