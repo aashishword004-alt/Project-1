@@ -1,15 +1,12 @@
 let express = require('express')
 let app = express()
 let connect = require('../database/connection')
-
 let bodyarser = require('body-parser')
 app.use(bodyarser.json())
 app.use(bodyarser.urlencoded({ extended: true }))
 
 
-const CHAT = '/service'
-
-
+const CHAT = '/service '
 
 
 app.get(CHAT, (req, res) => {
@@ -119,7 +116,6 @@ app.post(CHAT + '/conversation', (req, res) => {
         }
     })
 })
-
 
 // for messages 
 app.post(CHAT + '/message', (req, res) => {
