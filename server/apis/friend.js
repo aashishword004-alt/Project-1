@@ -19,7 +19,7 @@ app.post(friend + '/send', async (req, res) => {
     try {
         const sql = 'INSERT INTO friend_requests(sender_id,receiver_id) VALUES(?,?)'
         const value = [sender, reciever]
-        const [result] = await connect.con.promise().query(sql, value,);
+        const [result] = await connect.con.query(sql, value,);
 
         return res.status(200).json([{ 'error': false }, {
             'success': true
@@ -30,18 +30,21 @@ app.post(friend + '/send', async (req, res) => {
 
     }
     catch (error) {
-        // console.log(error)
 
-        if (error.errno == 1062) {
-            return res.status(409).json([{ 'error': true }, {
-                'success': false
-            },
-            {
-                'message': 'freind request are allredy send '
-            }])
+        console.log(error);
+
+        if (error.errno === 1062) {
+            return res.status(409).json([
+                { error: true },
+                { success: false },
+                { message: 'Friend request is already sent' }
+            ]);
         }
-        return res.json([{ 'error': true }, { 'message': 'somthing wrong in server' }])
 
+        return res.status(500).json([
+            { error: true },
+            { message: 'Something went wrong in server' }
+        ]);
     }
 })
 
