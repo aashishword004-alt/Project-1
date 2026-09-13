@@ -1,13 +1,25 @@
-function er ()
-{
-    return([{'error' : true},
+let same = {
+    er: () => {
+        return ([{ 'error': true },
         {
-            'success' : false
+            'success': false
         },
         {
-            'message' : 'input is missing'
+            'message': 'input is missing'
         }
-    ])
+        ])
+    },
+    server: () => {
+        return ([{ 'error': true },
+        {
+            'success': false
+        },
+        {
+            'message': 'somthing wrong in server'
+        }
+        ])
+    }
+
 }
 
-module.exports.er=er
+module.exports = same
