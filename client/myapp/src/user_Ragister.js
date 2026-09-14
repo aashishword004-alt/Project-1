@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useState } from 'react';
+import './App.css'
 
 
 function Ragister() {
@@ -9,7 +10,6 @@ function Ragister() {
     let [email, setEmail] = useState("");
     let [number, setNumber] = useState("");
     let [password, setPassword] = useState("");
-    let [confirmPassword, setConfirmPassword] = useState("");
 
     // let UserRagister = (e) => {
 
@@ -64,8 +64,7 @@ function Ragister() {
             name : name,
             email : email,
             number : number,
-            password : password,
-            confirmPassword : confirmPassword
+            password : password
         }).then((response) => {
                 console.log(response.data);
 
@@ -93,14 +92,8 @@ function Ragister() {
 
     return (
         <div>
-            <meta charSet="UTF-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <title>User Registration</title>
             {/* Bootstrap 5 CSS */}
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-            {/* Bootstrap Icons */}
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
-            <style dangerouslySetInnerHTML={{ __html: "\n        body {\n            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);\n            min-height: 100vh;\n            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n        }\n        \n        .register-card {\n            background: rgba(255, 255, 255, 0.95);\n            backdrop-filter: blur(10px);\n            border: 1px solid rgba(13, 110, 253, 0.1);\n            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);\n            border-radius: 20px;\n        }\n        \n        .form-control:focus {\n            border-color: #0d6efd;\n            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);\n        }\n        \n        .btn-primary {\n            background: linear-gradient(45deg, #0d6efd, #4dabf7);\n            border: none;\n            border-radius: 12px;\n            padding: 12px 30px;\n            font-weight: 600;\n            transition: all 0.3s ease;\n        }\n        \n        .btn-primary:hover {\n            transform: translateY(-2px);\n            box-shadow: 0 10px 25px rgba(13, 110, 253, 0.4);\n        }\n        \n        .input-group-text {\n            background-color: #f8f9fa;\n            border: 1px solid #dee2e6;\n            color: #0d6efd;\n        }\n        \n        .form-floating > label {\n            color: #6c757d;\n        }\n        \n        .card-header {\n            background: linear-gradient(45deg, #0d6efd, #4dabf7);\n            color: white;\n            border-radius: 20px 20px 0 0 !important;\n            text-align: center;\n            padding: 20px;\n        }\n        \n        .bi {\n            font-size: 1.2rem;\n        }\n    " }} />
             <div className="container">
                 <div className="row justify-content-center">
                     <div className="col-lg-6 col-md-8 col-sm-10">
@@ -147,15 +140,6 @@ function Ragister() {
                                         <input type="password"
                                             value={password} onChange={(e) => setPassword(e.target.value)}
                                             className="form-control" placeholder="Password" required />
-                                    </div>
-                                    {/* Confirm Password */}
-                                    <div className="input-group mb-4">
-                                        <span className="input-group-text">
-                                            <i className="bi bi-lock-fill" />
-                                        </span>
-                                        <input type="password"
-                                            value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
-                                            className="form-control" placeholder="Confirm Password" required />
                                     </div>
                                     {/* Terms Checkbox */}
                                     <div className="form-check mb-4">
