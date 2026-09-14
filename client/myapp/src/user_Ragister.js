@@ -10,7 +10,7 @@ function Ragister() {
     let [email, setEmail] = useState("");
     let [number, setNumber] = useState("");
     let [password, setPassword] = useState("");
-    let [confirmPassword, setConfirmPassword] = useState("");
+    let [confirmpassword, setConfirmpassword] = useState("");
 
     // let UserRagister = (e) => {
 
@@ -65,7 +65,9 @@ function Ragister() {
             name : name,
             email : email,
             number : number,
-            password : password
+            password : password,
+            confirmpassword : confirmpassword
+
         }).then((response) => {
                 console.log(response.data);
 
@@ -73,6 +75,7 @@ function Ragister() {
 
                 if (error !== false) {
                     alert("error occurred");
+                    console.log(error)
                 } else {
                     let success = response.data[1].success;
                     let message = response.data[2].message;
@@ -148,7 +151,7 @@ function Ragister() {
                                             <i className="bi bi-lock-fill" />
                                         </span>
                                         <input type="password"
-                                            value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+                                            value={confirmpassword} onChange={(e) => setConfirmpassword(e.target.value)}
                                             className="form-control" placeholder="Confirm Password" required />
                                     </div>
                                     {/* Terms Checkbox */}

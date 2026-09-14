@@ -31,51 +31,41 @@ function Users(req, res) {
 // Post request 
 // Ragister API 
 function register(req, res) {
-    console.log(req.body);
-
-    if (req.body === undefined) {
-        res.json([{ 'error': true }, { 'success': false }, { 'message': 'Input is Missing' }]);
+    let { name, email, number, password, confirmpassword } = req.body;
+    if (name === undefined || email === undefined || number === undefined || password === undefined || confirmpassword === undefined) {
+       return res.json([{ 'error': true }, { 'success': false }, { 'message': 'Input is Missing' }]);
     }
     else {
-        let { name, email, number, password, confirmPassword } = req.body;
-        if (name === undefined || email === undefined || number === undefined || password === undefined || confirmPassword === undefined) {
-            res.json([{ 'error': true }, { 'success': false }, { 'message': 'Input is Missing' }]);
+        if (password !== confirmpassword) {
+           return res.json([{ 'error': true }, { 'success': false }, { 'message': 'Password  does not match' }]);
+            
         }
         else {
-            if (password !== confirmPassword) {
-                res.json([{ 'error': true }, { 'success': false }, { 'message': 'Password  does not match' }]);
-                return;
-            }
-            else {
-                let sql = "INSERT INTO users( name, email, number, password) VALUES (?,?,?,?)";
-                security.gethashpassword(password).then((hash) => {
-                    let Value = [name, email, number, hash];
-                    connect.con.query(sql, Value, (error, result) => {
-                        if (error) {
-                            if (error.errno === 1062) {
-                                res.json([{ 'error': true }, { 'success': false }, { 'message': 'Email Already Exists' }]);
-                            }
-                            else {
-                                console.log("error in inserting data ", error);
-                                res.json([{ 'error': true }, { 'success': false }, { 'message': 'error in inserting data' }]);
-                            }
+            let sql = "INSERT INTO users( name, email, number, password) VALUES (?,?,?,?)";
+            security.gethashpassword(password).then((hash) => {
+                let Value = [name, email, number, hash];
+                connect.con.query(sql, Value, (error, result) => {
+                    if (error) {
+                        if (error.errno === 1062) {
+                            res.json([{ 'error': true }, { 'success': false }, { 'message': 'Email Already Exists' }]);
                         }
                         else {
-                            res.json([{ 'error': false }, { 'success': true }, { 'message': 'User Registered successfully' }, { "id": result.insertId }]);
+                            console.log("error in inserting data ", error);
+                            res.json([{ 'error': true }, { 'success': false }, { 'message': 'error in inserting data' }]);
                         }
+                    }
+                    else {
+                        res.json([{ 'error': false }, { 'success': true }, { 'message': 'User Registered successfully' }, { "id": result.insertId }]);
+                    }
 
-                    });
                 });
-
-            }
+            });
 
         }
 
     }
 
-
-
-};
+}
 
 // Login API
 function login(req, res) {
@@ -374,6 +364,6 @@ module.exports.login = login;
 module.exports.changepassword = changepassword;
 module.exports.forgotpassword = forgotpassword;
 module.exports.adminlogin = adminlogin;
-module.exports.adminchangepassword = adminchangepassword; 
+module.exports.adminchangepassword = adminchangepassword;
 
 
