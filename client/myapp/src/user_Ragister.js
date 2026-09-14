@@ -10,6 +10,7 @@ function Ragister() {
     let [email, setEmail] = useState("");
     let [number, setNumber] = useState("");
     let [password, setPassword] = useState("");
+    let [confirmPassword, setConfirmPassword] = useState("");
 
     // let UserRagister = (e) => {
 
@@ -140,6 +141,15 @@ function Ragister() {
                                         <input type="password"
                                             value={password} onChange={(e) => setPassword(e.target.value)}
                                             className="form-control" placeholder="Password" required />
+                                    </div>
+                                    {/* Confirm Password */}
+                                    <div className="input-group mb-4">
+                                        <span className="input-group-text">
+                                            <i className="bi bi-lock-fill" />
+                                        </span>
+                                        <input type="password"
+                                            value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+                                            className="form-control" placeholder="Confirm Password" required />
                                     </div>
                                     {/* Terms Checkbox */}
                                     <div className="form-check mb-4">
