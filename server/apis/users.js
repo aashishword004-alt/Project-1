@@ -16,7 +16,7 @@ app.use(bodyparser.urlencoded({ extended: true }));
 
 // Routes 
 
-const ROUTE = '/users'
+const ROUTE = '/user'
 
 const ADMIN = '/admin'
 
@@ -39,6 +39,38 @@ app.get(ROUTE, (req, res) => {
     })
 });
 
+
+// admin 
+app.post(ROUTE + '/register/admin', (req, res) => {
+    let { name, email, password } = req.body;
+    if (name === undefined || email === undefined || password === undefined) {
+        res.json([{ 'Error': true }, { 'Message': 'Input is Missing' }]);
+    }
+    else {
+        let sql = "INSERT INTO users( name, email, password ,role) VALUES (?,?,?,?)";
+        security.gethashpassword(password).then((hash) => {
+            let role = 'admin'
+            let Value = [name, email, hash ,role];
+            connect.con.query(sql, Value, (error, result) => {
+                if (error) {
+                    if (error.errno === 1062) {
+                        res.json([{ 'Error': true }, { 'Message': 'Email Already Exists' }]);
+                    }
+                    else {
+                        console.log("Error in inserting data ", error);
+                        res.json([{ 'Error': true }, { 'Message': 'Error in inserting data' }]);
+                    }
+                }
+                else {
+                    res.json([{ 'Error': false }, { 'Success': true }, { 'Message': 'User Registered Successfully' }, { "id": result.insertId }]);
+                }
+
+            });
+        });
+
+    }
+
+});
 // Post request 
 // Ragister API
 app.post(ROUTE + '/register', (req, res) => {

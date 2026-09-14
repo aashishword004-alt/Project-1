@@ -59,7 +59,7 @@ app.post(POST_ROUTE + '/upload/:id', upload.single('media'), (req, res) => { pos
 
 
 
-const Port = 3000;
+const Port = 5000;
 app.listen(Port, () => {
     console.log(`Server is running on port ${Port}`);
 });

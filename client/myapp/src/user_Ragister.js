@@ -28,26 +28,26 @@ function Ragister() {
     //         data: form
     //     }).then((response) => {
     //         console.log(response.data);
-    //          let Error = response.data[0].Error;
-    //          if(Error !== false)
+    //          let error = response.data[0].error;
+    //          if(error !== false)
     //          {
-    //             alert(Error);
+    //             alert(error);
     //          }else{
-    //             let Success = response.data[1].Message;
-    //             let Message = response.data[2].Message;
-    //             if(Success === false) 
+    //             let success = response.data[1].message;
+    //             let message = response.data[2].message;
+    //             if(success === false) 
     //                 {
-    //                     console.log(Message);
+    //                     console.log(message);
     //                 }
     //                 else{
-    //                     alert(Message);
+    //                     alert(message);
 
     //                 }
     //             }
 
     //     }).catch((error) => {
-    //         if (error === 'NETWORK_ERROR') {
-    //             alert("Network Error. Please check your connection and try again.");
+    //         if (error === 'NETWORK_error') {
+    //             alert("Network error. Please check your connection and try again.");
     //         }
 
     //     })
@@ -69,18 +69,18 @@ function Ragister() {
         }).then((response) => {
                 console.log(response.data);
 
-                let Error = response.data[0].Error;
+                let error = response.data[0].error;
 
-                if (Error !== false) {
-                    alert("Error occurred");
+                if (error !== false) {
+                    alert("error occurred");
                 } else {
-                    let Success = response.data[1].Success;
-                    let Message = response.data[2].Message;
+                    let success = response.data[1].success;
+                    let message = response.data[2].message;
 
-                    if (Success === false) {
-                        console.log(Message);
+                    if (success === false) {
+                        console.log(message);
                     } else {
-                        alert(Message );
+                        alert(message );
                     }
                 }
             })

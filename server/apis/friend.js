@@ -20,7 +20,7 @@ app.post(friend + '/send', (req, res) => {
     }
     else {
         const sql = 'INSERT INTO friend_requests(sender_id,receiver_id) VALUES(?,?)'
-        const value = [sender, reciever]
+        const value = [sender, receiver]
         connect.con.query(sql, value, (error, result) => {
             if (error) {
                 if (error.errno === 1062) {
@@ -75,6 +75,30 @@ app.put(friend + '/reject', (req, res) => {
 
     }
 })
+
+app.delete(friend + '/cancel' , (req,res) =>{
+    let {id,sender}  = req.body
+    {
+        if(!id || !sender)
+        {
+            res.json(same.er())
+        }
+        else{
+            let sql = `delete from  friend_requests where id = ? and sender_id = ? and status = 'pending'`
+            connect.con.query(sql,[id,sender] ,  (error, result) =>{
+                if(error)
+                {
+                    console.log(error)
+                    res.json(same.server())
+                }
+                else{
+                    res.json([{'error' : false} ,{'success' : true},{'message' : 'request cancel successfully'}])
+                }
+            })
+        }
+    }
+})
+
 
 
 let port = 3000
