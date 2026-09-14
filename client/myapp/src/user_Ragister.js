@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { useState } from 'react';
 import './App.css'
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { showmessage, showerror, showinfo } from './notification';
 
 function Ragister() {
 
@@ -62,43 +64,47 @@ function Ragister() {
 
         let url = "http://localhost:5000/users/register";
         axios.post(url, {
-            name : name,
-            email : email,
-            number : number,
-            password : password,
-            confirmpassword : confirmpassword
+            name: name,
+            email: email,
+            number: number,
+            password: password,
+            confirmpassword: confirmpassword
 
         }).then((response) => {
-                console.log(response.data);
+            console.log(response.data);
 
-                let error = response.data[0].error;
+            let error = response.data[0].error;
 
-                if (error !== false) {
-                    alert("error occurred");
-                    console.log(error)
+            if (error !== false) {
+                showinfo('This Mail is Not Valid Please Try Another Mail')
+            } else {
+                let success = response.data[1].success;
+                let message = response.data[2].message;
+
+                if (success === false) {
+                    showmessage(message)
+                    console.log(message);
                 } else {
-                    let success = response.data[1].success;
-                    let message = response.data[2].message;
-
-                    if (success === false) {
-                        console.log(message);
-                    } else {
-                        alert(message );
-                    }
+                    alert(message);
+                    showinfo(message)
                 }
-            })
+            }
+        })
             .catch((error) => {
-                console.log(error);
-                alert("Something went wrong");
+                // console.log(error);
+                // alert("Something went wrong");
+                showerror('Somthing went Wrong in server')
             });
     };
 
 
     return (
         <div>
+
             <title>User Registration</title>
             {/* Bootstrap 5 CSS */}
             <div className="container">
+                <ToastContainer />
                 <div className="row justify-content-center">
                     <div className="col-lg-6 col-md-8 col-sm-10">
                         <div className="card register-card">
