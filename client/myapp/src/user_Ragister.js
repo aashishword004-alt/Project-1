@@ -71,8 +71,6 @@ function Ragister() {
             confirmpassword: confirmpassword
 
         }).then((response) => {
-            console.log(response.data);
-
             let error = response.data[0].error;
 
             if (error !== false) {

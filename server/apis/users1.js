@@ -88,7 +88,7 @@ function login(req, res) {
                     let hashpassword = result[0]['password'];
                     security.conformpassword(password, hashpassword).then((match) => {
                         if (match === false) {
-                            res.json([{ 'error': true }, { 'success': false }, { 'message': 'Login Attempt Failed' }]);
+                            res.json([{ 'error': false }, { 'success': false }, { 'message': 'Login Attempt Failed' }]);
                         }
                         else {
                             res.json([{ 'error': false }, { 'success': true }, { 'message': 'Login successfully' }]);
