@@ -3,46 +3,45 @@ import { useState } from "react";
 import { showinfo, showmessage } from "./notification";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-
+import './login.css'
 
 export default function Login() {
-  let [email, setEmail] = useState(""); 
-  let [password, setPassword] = useState("");
+    let [email, setEmail] = useState("");
+    let [password, setPassword] = useState("");
 
-    let userlogin = (e) =>{
-       
+    let userlogin = (e) => {
+
         e.preventDefault()
         let url = 'http://localhost:5000/users/login'
-        axios.post(url,{
-            email:email,
-            password:password
-        }).then((response) =>{
-        console.log(response.data)
-        let error = response.data[0].error
-        if(error !== false)
-        {
-            showinfo('Mail not found')
-            // console.log(error,'what')
-        }
-        else{
+        axios.post(url, {
+            email: email,
+            password: password
+        }).then((response) => {
+            console.log(response.data)
+            let error = response.data[0].error
             let success = response.data[1].success
             let message = response.data[2].message
-            
-            if(success === false)
-            {
+            if (error !== false) {
                 showinfo(message)
-                //console.log(message,'not success')
+                // console.log(error,'what')
             }
-            else{
-                showmessage(message)
-                //console.log(message)
+            else {
 
+
+                if (success === false) {
+                    showinfo(message)
+                    //console.log(message,'not success')
+                }
+                else {
+                    showmessage(message)
+                    //console.log(message)
+
+                }
             }
-        }
-        
 
-        }).catch((error) =>{
-               alert(error)
+
+        }).catch((error) => {
+            alert(error)
         })
     }
     return (<>
@@ -61,7 +60,7 @@ export default function Login() {
         </nav>
         {/* Login Section */}
         <div className="login-section">
-            <ToastContainer/>
+            <ToastContainer />
             <div className="login-card">
                 <h1>Sign in</h1>
                 <p className="login-subtitle">Stay updated on your professional world.</p>
@@ -69,7 +68,7 @@ export default function Login() {
                     {/* Email */}
                     <div className="mb-3">
                         <label htmlFor="email" className="form-label">
-                            Email 
+                            Email
                         </label>
                         <input
                             type="text"

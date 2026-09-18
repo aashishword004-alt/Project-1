@@ -51,7 +51,7 @@ function register(req, res) {
                         }
                         else {
                             console.log("error in inserting data ", error);
-                            res.json([{ 'error': true }, { 'success': false }, { 'message': 'error in inserting data' }]);
+                            res.json([{ 'error': false }, { 'success': false }, { 'message': 'error in inserting data' }]);
                         }
                     }
                     else {
