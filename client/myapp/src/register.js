@@ -28,14 +28,13 @@ export default function Register() {
             let message = response.data[2].message;
             if (error !== false) {
                 showinfo(message)
-                //console.log(error)
+             
             } else {
 
                 if (success === false) {
                     showinfo(message)
                 }
                 else {
-                    //alert(message)
                     showmessage(message)
                 }
 
